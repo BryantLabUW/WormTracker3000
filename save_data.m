@@ -1,0 +1,29 @@
+function [] = save_data()
+%% save_data saves data as an xlsx file
+
+global info
+global vals
+
+if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
+        || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')
+    
+headers={'Distance_Ratio', 'Mean_Speed_cm_per_s', ...
+    'Pathlength_cm', 'Final_Location_Relative_to_Control_cm', ...
+    'Final_Location_Relative_to_Experimental_cm', ...
+    'Time_in_Control_Zone_sec', 'Time_in_Experimental_Zone_sec'};
+T=table(vals.distanceratio', vals.meanspeed', ...
+    vals.pathlength', vals.EndLoc.Cport', ...
+    vals.EndLoc.Eport', vals.zonetime.C',...
+    vals.zonetime.E','VariableNames',...
+    headers);
+writetable(T,fullfile(pathstr,name,strcat(name,'_results.xlsx')));
+
+TT=table(nfinal.C, nfinal.E,'VariableNames', ...
+    {'number_of_worms_ending_in_Control_Zone', 'number_of_worms_ending_in_Experimenal_Zone'});
+writetable(TT,fullfile(pathstr,name, strcat(name,'_Ctrls_vs_Exp_count.xlsx')));
+
+TTT=table(instantspeed,'VariableNames',{'InstantSpeed'});
+writetable(TTT,fullfile(pathstr,name,strcat(name,'_instantspeed.xlsx')));
+
+end
+end
