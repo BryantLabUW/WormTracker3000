@@ -76,7 +76,7 @@ displacement_ports_cm = sqrt((Ports.Lx_cm-Ports.Rx_cm).^2 + (Ports.Ly_cm-Ports.R
 
 %   Determine the offset between the inputted inter-port distance, and the
 %   expected distance for Odor or CO2 assays
-offset_ports_cm = repmat(info.inter_port_interval, size(displacement_ports_cm,1),1) - displacement_ports_cm;
+offset_ports_cm = info.inter_port_interval - displacement_ports_cm;
 
 %% Shift the ports along the line connecting them, such that they equal the expected distance between the ports.
 % This uses trigonometry

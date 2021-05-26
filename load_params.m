@@ -123,7 +123,7 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
     end
     
     % Gradient steepness
-    refstr = {'cmperdeg'};
+    refstr = {'cmperdeg', 'Gradient slope', 'gradient slope'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
         info.gradientrate = xlsread(info.calledfile, 'Index', strcat(...
@@ -289,7 +289,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
     info.ref.Rx = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
-    [I, J] = find(contains(headers, 'XR'));
+    [I, J] = find(contains(headers, 'YR'));
     info.ref.Ry = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
@@ -319,6 +319,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         info.radius = 4.9/2; % radius of bacterial chemotaxis assay circle
         info.scoringradius = 2/2; % radius of scoring circles
         info.inter_port_interval = (info.radius*2)-(info.scoringradius*2); % calculate distance between centers of two ports
+        info.inter_port_interval = repmat(info.inter_port_interval, info.numworms,1);
         disp('Bacterial Chemotaxis Assay Parameters Loaded');
     end
     
@@ -326,6 +327,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         info.radius = 3.75/2; % radius of CO2 assay circle
         info.portradius = 0.3175/2; % inner radius of CO2/Air ports
         info.inter_port_interval = 4.75; % NB measured this distance for ASB on 9/24/19
+        info.inter_port_interval = repmat(info.inter_port_interval, info.numworms,1);
         disp('CO2 Assay Parameters Loaded');
         
     end
@@ -334,13 +336,14 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         info.radius = 5/2; % radius of pheromone chemotaxis assay circle; provided to ASB on 12/2/19
         info.scoringradius = 2/2; % radius of scoring circles
         info.inter_port_interval = (info.radius*2)-(info.scoringradius*2); % calculate distance between centers of two ports
+        info.inter_port_interval = repmat(info.inter_port_interval, info.numworms,1);
         disp('Pheromone Assay Parameters Loaded');
     end
     
     if contains(info.assaytype, 'Odor_5')
         info.radius = 5/2; % radius of odor chemotaxis assay circle
         info.scoringradius = 1/2; % radius of scoring circles
-        info.inter_port_interval = 2; % MLC gave ASB this distance on 12/4/19
+        info.inter_port_interval = repmat(2, info.numworms,1); % MLC gave ASB this distance on 12/4/19
         disp('Odor Assay Parameters Loaded');
     end
     
@@ -406,15 +409,24 @@ if contains(info.assaytype, 'Custom_linear')
     info.ref.Rx = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
-    [I, J] = find(contains(headers, 'XR'));
+    [I, J] = find(contains(headers, 'YR'));
     info.ref.Ry = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
     
+    % Distance between alignment ROIs
+    refstr = {'alignment distance', 'Alignment distance', 'inter-port interval', 'Inter-alignment distance'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+    info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    end
+             
     % Camera sizing parameter (pixels per cm)
     refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
     [I, J] = find(contains(headers, refstr));
-    info.pixelspercm(:,1) = xlsread(info.calledfile, 'Index', strcat(...
+    info.pixelspercm = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
     
@@ -425,14 +437,36 @@ if contains(info.assaytype, 'Custom_linear')
     if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
         info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
     end
+   
+     % Gradient min value
+    refstr = {'Gradient low', 'gradient low', 'Low','min', 'Min'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+        info.gradient.min = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
+    end
     
+     % Gradient max value
+    refstr = {'Gradient High', 'gradient high', 'High', 'max', 'Max'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+        info.gradient.max = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
+    end
+    
+    % Gradient steepness
+    refstr = {'cmperdeg', 'Gradient slope', 'gradient slope'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+        info.gradient.rate = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
+    end
+
     
 end
 
-if contains(info.assaytype, 'Custom_linear')
-    prompt = {'X-axis distance between reference coordinates that are aligned along y-axis'};
-    dlgtitle = 'Input assay parameters';
-    answer = inputdlg(prompt, dlgtitle);
-    info.inter_port_interval = str2num(answer{1});
-end
+
 end

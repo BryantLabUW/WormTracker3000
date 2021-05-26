@@ -87,7 +87,7 @@ plot(xvals(1,:),yvals(1,:),'k+'); % plotting starting locations
 hold off
 
 % Labeling the figure and saving
-ylabel('Distance (cm)'); xlabel('Distance (cm)');
+ylabel('Distance (cm)'); xlabel('Gradient values');
 title(name,'Interpreter','none');
 set(gcf, 'renderer', 'Painters');
 
