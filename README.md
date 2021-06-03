@@ -23,13 +23,13 @@ Inputs to the worm tracker come in the form of an excel spreadsheet containing a
 
 For tabs containing worm tracks: each tab should be named with the worms Unique ID (often the UID of the experiment followed by a numerical designation matching the Cell Counter track number from ImageJ/FIJI). The results of the tracking plugin should be pasted into the tab such that the two columns that have the values -1 in row 1 are located in Excel columns F and G, and the final column is located in Excel column H. This will ensure that the X/Y coordinates (in pixels) are located in Excel columns D and E, and the frame information is located in Excel column C. 
 
-The index tab must include the following header/value pairs, placed in the indicated cells: 
+The index tab must include the following header/value pairs (capitalization matters): 
 
 - For all assays
-    - Cells A1/A2: "Number of Worms"/number of worms to track. Should be <= number of UIDs
-    - Cells A4/A5: "Number of Images"/number of images per worm track
+    - "Number of Worms": number of worms to track. Should be <= number of UIDs
+    - "Number of Images": number of images per worm track
 
-The index tab must also include the following labeled columns:
+The index tab must also include the following labeled columns (capitalization matters):
 
 - "UID": The worms Unique IDs. These much match exactly the names of the tabs. These values are used by Matlab to identify which tabs contain data for importing. 
 - "pixels per cm": The pixels per cm conversion rate for the camera system
