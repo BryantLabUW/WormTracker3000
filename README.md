@@ -31,13 +31,18 @@ The index tab must include the following header/value pairs, placed in the indic
 
 The index tab must also include the following labeled columns:
 
-- "UID": The worms’ Unique IDs. These much match exactly the names of the tabs. These values are used by Matlab to identify which tabs contain data for importing. 
+- "UID": The worms Unique IDs. These much match exactly the names of the tabs. These values are used by Matlab to identify which tabs contain data for importing. 
 - "pixels per cm": The pixels per cm conversion rate for the camera system
-- For chemotaxis assays only:
+- For non-thermotaxis assays:
     - "orientation": a logical value (1 or 0) indicating whether the track should be flipped horizontally
 - For assays in which two reference points are used for alignment and orientation:  
     - "XL": x-coordinates for left-side reference point (e.g. left gas port or odor centroid)
     - "YL": y-coordinates for left-side reference point (e.g. left gas port or odor centroid)
     - "XR": x-coordinates for right-side reference point (e.g. right gas port or odor centroid)
     - "YR": y-coordinates for right-side reference point (e.g. right gas port or odor centroid)
+    - "Alignment distance": distance in cm between left-side and right-side reference points
+- For general linear gradients:  
+    - "Low gradient": lowest gradient value in assay
+    - "High gradient": greatest gradient value in assay
+    - "Gradient slope": change in gradient per cm
 
