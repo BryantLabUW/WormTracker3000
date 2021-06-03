@@ -2,11 +2,13 @@ function [] = plot_linear(xvals, yvals, name, pathstr)
 %% plot_linear plots worm tracks collected from a linear gradient
 
 %% Make a plot with all the tracks, then save it.
+global info
 fig = DrawThePlot(xvals, yvals, name);
 movegui('northeast');
 
 ax=get(fig,'CurrentAxes');
-set(ax,'XLim',[min(round(min(xvals)))-1 max(round(max(xvals)))+1]);
+%set(ax,'XLim',[min(round(min(xvals)))-1 max(round(max(xvals)))+1]);
+set(ax,'XLim',[min(info.gradient.min) max(info.gradient.max)]);
 
 setaxes = 1;
 while setaxes>0 % loop through the axes selection until you're happy
@@ -14,15 +16,23 @@ while setaxes>0 % loop through the axes selection until you're happy
     switch answer
         case 'Yes'
             setaxes=1;
-            vals=inputdlg({'X Min','X Max','Y Min', 'Y Max'},...
-                'New X/Y Axes',[1 35; 1 35; 1 35;1 35],{num2str(ax.XLim(1)) num2str(ax.XLim(2))  num2str(ax.YLim(1)) num2str(ax.YLim(2))});
+            vals=inputdlg({'Plot title','X Min','X Max',...
+                'X-axis label', 'Y Min', 'Y Max', 'Y-axis label'},...
+                'New X/Y Axes',[1 35; 1 35; 1 35; 1 35;1 35; 1 35;1 35],...
+                {ax.Title.String num2str(ax.XLim(1)) num2str(ax.XLim(2))  ...
+                ax.XLabel.String ...
+                num2str(ax.YLim(1)) num2str(ax.YLim(2)) ...
+                ax.YLabel.String});
             if isempty(vals)
                 setaxes = -1;
             else
-                ax.XLim(1) = str2double(vals{1});
-                ax.XLim(2) = str2double(vals{2});
-                ax.YLim(1) = str2double(vals{3});
-                ax.YLim(2) = str2double(vals{4});
+                ax.Title.String = vals{1};
+                ax.XLim(1) = str2double(vals{2});
+                ax.XLim(2) = str2double(vals{3});
+                ax.XLabel.String = vals{4};
+                ax.YLim(1) = str2double(vals{5});
+                ax.YLim(2) = str2double(vals{6});
+                ax.YLabel.String = vals{7};
             end
         case 'No'
             setaxes=-1;
@@ -45,12 +55,14 @@ if size(xvals,2)>10
         rng('shuffle'); % Seeding the random number generator to it's random.
         p = randperm(size(xvals,2),n);
         
-        fig2=DrawThePlot(xvals(:,p),yvals(:,p),strcat(name, ' subset'));
+        fig2=DrawThePlot(xvals(:,p),yvals(:,p),strcat(ax.Title.String, ' subset'));
         movegui('northeast');
         % Set axes for subplot equal to axes for full plot
         ax2=get(fig2,'CurrentAxes');
         set(ax2,'XLim',ax.XLim);
         set(ax2,'YLim',ax.YLim);
+        set(ax2,'XLabel.String',ax.XLabel.String);
+        set(ax2,'YLabel.String',ax.YLabel.String);
         
         answer = questdlg('Plot it again?', 'Subset Plot', 'Yes');
         switch answer
