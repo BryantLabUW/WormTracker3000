@@ -468,5 +468,84 @@ if contains(info.assaytype, 'Custom_linear')
     
 end
 
+%% Import experimental information for basic information about worm tracks, ignoring gradients
+if contains(info.assaytype, 'Basic_info')
+    disp('Reading data from file....');
+    [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
+    
+    alphabet = ['A':'Z'];
+    
+    [~, headers, ~] = xlsread(info.calledfile, 'Index');
+    
+    % Number of worm tracks to analyze
+    [I, J] = find(contains(headers, 'Number of Worms'));
+    if ~isempty(I) && ~isempty(J)
+        info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+    end
+    
+    % Length of track (number of frames)
+    [I, J] = find(contains(headers, 'Number of Images'));
+    if ~isempty(I) && ~isempty(J)
+        info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+    end
+    
+    if info.numworms == 0 || isempty(info.numworms) || isempty(info.tracklength)
+        error('User Error. The Index tab in your .xlsx file contains missing/incorrect values in column A.');
+    end
+    
+    % Unique IDs for worms
+    [I, J] = find(contains(headers, {'UID', 'ID'}));
+    if ~isempty(I) && ~isempty(J)
+        [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
+    end
+    
+    % Alignment ROIs for rotation - usually the gas ports or odor regions
+    [I, J] = find(contains(headers, 'XL'));
+    info.ref.Lx = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    [I, J] = find(contains(headers, 'YL'));
+    info.ref.Ly = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    [I, J] = find(contains(headers, 'XR'));
+    info.ref.Rx = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    [I, J] = find(contains(headers, 'YR'));
+    info.ref.Ry = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    
+    % Distance between alignment ROIs
+    refstr = {'alignment distance', 'Alignment distance', 'inter-port interval', 'Inter-alignment distance'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+    info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    end
+             
+    % Camera sizing parameter (pixels per cm)
+    refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
+    [I, J] = find(contains(headers, refstr));
+    info.pixelspercm = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1),...
+        ':',alphabet(J), num2str(info.numworms+1)));
+    
+    if any(info.pixelspercm<10)
+        error('The Index sheet appears to have at least one pixels per cm column value that is are smaller than expected. Please make sure that column H contains the correct information. Then restart the tracker code.');
+    end
+    
+    if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
+        info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
+    end
+   
+    
+
+    
+end
 
 end

@@ -66,11 +66,13 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
 end
 
 %% Import tracks for custom linear assays
-if contains(info.assaytype, 'Custom_linear')
+if contains(info.assaytype, 'Custom_linear') || contains(info.assaytype, 'Basic_info')
     [dat.Xvals.Pixels, dat.Yvals.Pixels, dat.frame]=pull_coords(info.wormUIDs, info.tracklength, info.numworms);
     disp('...done.');
     
 end
+
+
 
 end
 

@@ -74,7 +74,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
 elseif contains(info.assaytype, 'Custom_linear')
     plot_linear(tracks.xvalsgradient, tracks.plotyvals, info.name, info.pathstr); 
 elseif contains(info.assaytype, 'Basic_info')
-    plot_basic(tracks.xvalscm, tracks.yvalscm, info.name, info.pathstr);    
+    plot_linear(tracks.xvalscm, tracks.yvalscm, info.name, info.pathstr);    
 end
 
 %% Save data

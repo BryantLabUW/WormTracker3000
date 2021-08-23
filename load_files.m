@@ -28,7 +28,7 @@ info.calledfile = fullfile(pathstr,name);
     'Isothermal Odor (22 cm arena)'; 'Pure Isothermal (22 cm arena)';...
     'Bacterial Assay (4.9 cm arena)'; 'CO2 Assay (3.75 cm arena)';...
     'Pheromone Assay (5 cm arena)'; 'Odor Assay (5 cm arena)';
-    'Custom linear assay'},...
+    'Custom linear assay'; 'Basic track info'},...
     'SelectionMode','single','ListSize',[200 150]);
 % Handle response
 if ok < 1
@@ -53,9 +53,11 @@ switch selection
     case 8
         info.assaytype = 'Odor_5'; % Odor Assay (5 cm arena)
     case 9
-        info.assaytype = 'Custom_linear'; % Custom assay iwth a linear gradient
-    case 10
+        info.assaytype = 'Custom_linear'; % Custom assay with a linear gradient
+    case 11
         info.assaytype = 'Custom_circle'; % Custom circular assay
+    case 10
+        info.assaytype = 'Basic_info'; % Basic information about distances moved, no gradient information
 end
 
 

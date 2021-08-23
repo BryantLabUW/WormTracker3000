@@ -35,5 +35,14 @@ elseif contains(info.assaytype, 'Custom_linear')
         headers);
     
     writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
+    
+elseif contains(info.assaytype, 'Basic_info')
+    headers={'Distance_Ratio', 'Mean_Speed_cm_per_s', ...
+        'Pathlength_cm'};
+    T=table(vals.distanceratio', vals.meanspeed', ...
+        vals.pathlength','VariableNames',...
+        headers);
+    
+    writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
 end
 end
