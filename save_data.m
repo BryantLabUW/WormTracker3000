@@ -18,11 +18,11 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         headers);
     writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
     
-    TT=table(nfinal.C, nfinal.E,'VariableNames', ...
+    TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
         {'number_of_worms_ending_in_Control_Zone', 'number_of_worms_ending_in_Experimenal_Zone'});
     writetable(TT,fullfile(info.pathstr,info.name, strcat(info.name,'_Ctrls_vs_Exp_count.xlsx')));
     
-    TTT=table(instantspeed,'VariableNames',{'InstantSpeed'});
+    TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
     writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx')));
     
 elseif contains(info.assaytype, 'Custom_linear')
@@ -44,5 +44,9 @@ elseif contains(info.assaytype, 'Basic_info')
         headers);
     
     writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
+
+    TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
+    writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx')));
+    
 end
 end
