@@ -468,8 +468,9 @@ if contains(info.assaytype, 'Custom_linear')
     
 end
 
+
 %% Import experimental information for basic information about worm tracks, ignoring gradients
-if contains(info.assaytype, 'Basic_info')
+if contains(info.assaytype, 'Basic_info') || contains(info.assaytype, 'GasShift')
     disp('Reading data from file....');
     [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
     
@@ -542,9 +543,21 @@ if contains(info.assaytype, 'Basic_info')
     if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
         info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
     end
-   
-    
+      
+end
 
+%% Import timing information when assays involve sequential presentation of stimuli
+if contains(info.assaytype, 'GasShift')
+    
+    % Timing of stimulus presentation
+    refstr = {'Stimulus Timing'};
+    [I, J] = find(contains(headers, refstr));
+    if ~isempty(I) && ~isempty(J)
+    [~,~,info.stim_timing] = xlsread(info.calledfile, 'Index', strcat(...
+        alphabet(J), num2str(I+1)));
+    
+    info.stim_timing = str2double(split(info.stim_timing, {',',';'}));
+    end
     
 end
 

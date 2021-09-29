@@ -1,6 +1,7 @@
 function [n, nfinal, neutZone]= quant_specific_co2(plotxvals, CportStdLoc)
 %%  quant_specific_co2 
-%   includes additional analyses specific for for single-worm CO2 tracking assays. 
+%   includes additional analyses specific for for single-worm CO2 tracking assays
+%   that are done using a CO2 gradient. 
 %
 %   Currently, calculating number of worms that end in scoring regions, as
 %   well as time spent in scoring regions by individual worms.
