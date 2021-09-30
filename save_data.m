@@ -25,7 +25,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
     TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
     writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx')));
     
-elseif contains(info.assaytype, 'Custom_linear')
+elseif contains(info.assaytype, 'Custom_linear') || contains(info.assaytype, 'Thermo_22')
     headers={'Final_location_in_gradient', 'Change_in_gradient_location',...
         'Distance_Ratio', 'Mean_Speed_cm_per_s', ...
         'Pathlength_cm'};

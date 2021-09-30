@@ -5,7 +5,6 @@ function [aPort] = align_to_ROIs(xvals, yvals, Ports, pixelpercmarray)
 % Converts pixels to cm
 
 
-global dat
 global tracks
 
 % Generate worm track values relative to Port L location (Port L at 0,0).
