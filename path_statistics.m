@@ -1,7 +1,7 @@
 function [] = path_statistics ()
 %%path_statistics (tracks.xvalscm, tracks.yvalscm, tracks)
 %   This function calculates pathlength, max displacement, distance ratio,
-%   and displacement relative to user provided reference ROIs
+%   and (if applicable) displacement relative to user provided reference ROIs
 
 global tracks
 global vals
@@ -14,7 +14,7 @@ global vals
 vals.distanceratio=vals.pathlength./vals.maxdisplacement; %Calculation of distance ratio, as defined in Castelletto et al 2014. Total distance traveled/maximum displacement.
 
 %% Calculating final resting place of each worm relative to the left and right alignment locations.
-
+if exist("tracks.Lx")
 %Calculating final displacement relative to left alignment mark
 displacement.L =sqrt((tracks.Lx-0).^2 + (tracks.Ly-0).^2);
 B= ~isnan(displacement.L);
@@ -26,4 +26,5 @@ displacement.R =sqrt((tracks.Rx).^2 + (tracks.Ry).^2);
 B= ~isnan(displacement.R);
 Indices = arrayfun(@(x) find(B(:,x),1,'last'), 1:size(displacement.R,2));
 vals.finaldisp.R = arrayfun(@(x,y) displacement.R(x,y), Indices, 1:size(displacement.R,2));
+end
 end

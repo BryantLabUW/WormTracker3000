@@ -37,6 +37,8 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         || contains(info.assaytype, 'Basic_info') ...
     [info.ref, info.pixelpercmarray] = adjust_port_scaling (dat.Xvals.Pixels, dat.Yvals.Pixels, info.pixelspercm, info.ref);
     [info.refcm] = align_to_ROIs (dat.Xvals.Pixels, dat.Yvals.Pixels, info.ref, info.pixelpercmarray);
+elseif contains(info.assaytype, 'Thermo_22')
+    convert_to_thermo(dat.Xvals.Pixels, dat.Yvals.Pixels, info.pixelspercm);
 end
 
 %% Standard Quantifications
@@ -60,6 +62,9 @@ elseif contains(info.assaytype, 'Bact_4.9') ...
 elseif contains(info.assaytype, 'Custom_linear')
     [tracks.xvalsgradient] = convert_to_gradient(tracks.plotxvals, tracks.plotyvals);
     [vals.finalgradientval,vals.gradientdiff] = quant_specific_linear(tracks.xvalsgradient);
+    
+elseif contains(info.assaytype, 'Thermo_22')
+    [vals.finalgradientval,vals.gradientdiff] = quant_specific_linear(tracks.xvalsgradient);
 end
 
 %% Plotting and Saving
@@ -71,7 +76,7 @@ end
 if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
         || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')
     plot_chemotaxis(tracks.plotxvals, tracks.plotyvals, vals.CportStdLoc, vals.neutZone, info.name, info.pathstr)
-elseif contains(info.assaytype, 'Custom_linear')
+elseif contains(info.assaytype, 'Custom_linear') || contains(info.assaytype, 'Thermo_22')
     plot_linear(tracks.xvalsgradient, tracks.plotyvals, info.name, info.pathstr); 
 elseif contains(info.assaytype, 'Basic_info')
     plot_basic(tracks.xvalscm, tracks.yvalscm, info.name, info.pathstr);    
