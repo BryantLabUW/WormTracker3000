@@ -61,8 +61,8 @@ if size(xvals,2)>10
         ax2=get(fig2,'CurrentAxes');
         set(ax2,'XLim',ax.XLim);
         set(ax2,'YLim',ax.YLim);
-        set(ax2,'XLabel.String',ax.XLabel.String);
-        set(ax2,'YLabel.String',ax.YLabel.String);
+        set(ax2,'XLabel',ax.XLabel);
+        set(ax2,'YLabel',ax.YLabel);
         
         answer = questdlg('Plot it again?', 'Subset Plot', 'Yes');
         switch answer
