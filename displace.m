@@ -31,8 +31,8 @@ hypotenuses = sqrt((osx - xvals(1:(size(xvals,1)-1),:)).^2+ (osy - yvals(1:(size
 % Then muliple distance by 10 to get mm/second.
 % Note that if sample frequency data is not provided by the user, a 1
 % frame/2 second sample rate is assumed by the program.
-meanspeed = mean((hypotenuses/info.samplefreq')*10, 'omitnan'); 
-instantspeed=(hypotenuses/info.samplefreq')*10; %mm/second. 
+meanspeed = mean((hypotenuses./info.samplefreq')*10, 'omitnan'); 
+instantspeed=(hypotenuses./info.samplefreq')*10; %mm/second. 
 
 tempx=xvals(2:end,:);
 tempy=yvals(2:end,:);
