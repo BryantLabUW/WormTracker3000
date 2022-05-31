@@ -15,16 +15,16 @@ vals.distanceratio=vals.pathlength./vals.maxdisplacement; %Calculation of distan
 
 %% Calculating final resting place of each worm relative to the left and right alignment locations.
 if exist("tracks.Lx")
-%Calculating final displacement relative to left alignment mark
-displacement.L =sqrt((tracks.Lx-0).^2 + (tracks.Ly-0).^2);
-B= ~isnan(displacement.L);
-Indices = arrayfun(@(x) find(B(:,x),1,'last'), 1:size(displacement.L,2));
-vals.finaldisp.L = arrayfun(@(x,y) displacement.L(x,y), Indices, 1:size(displacement.L,2));
-
-%Calculating final displacement relative to right alignment mark
-displacement.R =sqrt((tracks.Rx).^2 + (tracks.Ry).^2);
-B= ~isnan(displacement.R);
-Indices = arrayfun(@(x) find(B(:,x),1,'last'), 1:size(displacement.R,2));
-vals.finaldisp.R = arrayfun(@(x,y) displacement.R(x,y), Indices, 1:size(displacement.R,2));
+    %Calculating final displacement relative to left alignment mark
+    displacement.L =sqrt((tracks.Lx-0).^2 + (tracks.Ly-0).^2);
+    B= ~isnan(displacement.L);
+    Indices = arrayfun(@(x) find(B(:,x),1,'last'), 1:size(displacement.L,2));
+    vals.finaldisp.L = arrayfun(@(x,y) displacement.L(x,y), Indices, 1:size(displacement.L,2));
+    
+    %Calculating final displacement relative to right alignment mark
+    displacement.R =sqrt((tracks.Rx).^2 + (tracks.Ry).^2);
+    B= ~isnan(displacement.R);
+    Indices = arrayfun(@(x) find(B(:,x),1,'last'), 1:size(displacement.R,2));
+    vals.finaldisp.R = arrayfun(@(x,y) displacement.R(x,y), Indices, 1:size(displacement.R,2));
 end
 end

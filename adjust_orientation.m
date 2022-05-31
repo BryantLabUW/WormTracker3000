@@ -1,11 +1,10 @@
 function [] = adjust_orientation (plate_orientation)
 %% adjust_orientation adjusts x/y coordinates of tracked worms (in cm)
-%%  based on the direction of the gradient (to left vs to right)
+%  based on the direction of the gradient (to left vs to right)
 
 global info
 global tracks
 global vals
-
 
 plate_orientation(plate_orientation>0)=-1; %Value = 1, gradient R -> L, flip orientation
 plate_orientation(plate_orientation>-1)=1; %Value = 0, gradient L -> R
@@ -39,13 +38,8 @@ for i=1:size(plate_orientation,2)
            end 
 end
 
-
-
-%% Orient tracks depending on the location of the odorant
-% This some of this code is based on older code, from when there was no port
-% information.
-
-tracks.plotxvals = xvalsStd; % This used to involve multiplying with the CTorient, but it doesn't any longer b/c the calculation of distance from the port already does this.
+% Save to global variables
+tracks.plotxvals = xvalsStd;
 tracks.plotyvals = yvalsStd*-1;
 vals.HighStdLoc.x = HighGradient_Std.x;
 vals.HighStdLoc.y = HighGradient_Std.y*-1;

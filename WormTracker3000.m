@@ -6,8 +6,8 @@ function [] = WormTracker3000()
 %
 %   Code designed and created by Astra S. Bryant, PhD
 %
-%   Version 0.1
-%   Version Date: 3/15/21
+%   Version 0.2
+%   Version Date: May/June 2022
 
 close all; clear all
 warning('off');
@@ -35,10 +35,10 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')...
         || contains(info.assaytype, 'Custom_linear') ...
         || contains(info.assaytype, 'Basic_info') ...
-    [info.ref, info.pixelpercmarray] = adjust_port_scaling (dat.Xvals.Pixels, dat.Yvals.Pixels, info.pixelspercm, info.ref);
+    [info.ref, info.pixelpercmarray] = adjust_port_scaling (dat.Xvals.Pixels, dat.Yvals.Pixels, info.pixelspercm, info.ref); %converts tracks from pixels to cm
     [info.refcm] = align_to_ROIs (dat.Xvals.Pixels, dat.Yvals.Pixels, info.ref, info.pixelpercmarray);
 elseif contains(info.assaytype, 'Thermo_22')
-    convert_to_thermo(dat.Xvals.Pixels, dat.Yvals.Pixels, info.pixelspercm);
+    [tracks.xvalsgradient] = convert_to_thermo(dat.Xvals.Pixels, dat.Yvals.Pixels,info.pixelspercm); %converts tracks from pixels to cm then to temperature
 end
 
 %% Standard Quantifications

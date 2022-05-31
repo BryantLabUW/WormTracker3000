@@ -3,52 +3,69 @@ function [] = load_params
 
 global info
 
-%% Import experimental information for thermotaxis assays
+%% Import general experimental information
+% These values will be common across all assay types
 
-if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_22') ...
-        || contains(info.assaytype, 'Iso_22') || contains(info.assaytype, 'Thermo_22')
-    disp('Reading data from file....');
-    [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
-    
-    alphabet = ['A':'Z'];
-    
-    [~, headers, ~] = xlsread(info.calledfile, 'Index');
-    
-    % Number of worm tracks to analyze
-    [I, J] = find(contains(headers, 'Number of Worms'));
-    if ~isempty(I) && ~isempty(J)
-        info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    % Length of track (number of frames)
-    [I, J] = find(contains(headers, 'Number of Images'));
-    if ~isempty(I) && ~isempty(J)
-        info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    if info.numworms == 0 || isempty(info.numworms) || isempty(info.tracklength)
-        error('User Error. The Index tab in your .xlsx file contains missing/incorrect values in column A.');
-    end
-    
-    % Unique IDs for worms
-    [I, J] = find(contains(headers, {'UID', 'ID'}));
-    if ~isempty(I) && ~isempty(J)
-        [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
-            alphabet(J), num2str(I+1),...
-            ':',alphabet(J), num2str(info.numworms+1)));
-    end
-    
-    % Camera sizing parameter (pixels per cm)
-    refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
-    [I, J] = find(contains(headers, refstr));
-    info.pixelspercm(:,1) = xlsread(info.calledfile, 'Index', strcat(...
+disp('Reading data from file....');
+
+% Detect names of tabs in excel spreadsheet
+[~, info.sheets] = xlsfinfo(info.calledfile);
+alphabet = ['A':'Z'];
+[~, headers, ~] = xlsread(info.calledfile, 'Index');
+
+% Number of worm tracks to analyze
+[I, J] = find(contains(headers, 'Number of Worms'));
+if ~isempty(I) && ~isempty(J)
+    info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+end
+
+% Length of track (number of frames)
+[I, J] = find(contains(headers, 'Number of Images'));
+if ~isempty(I) && ~isempty(J)
+    info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+end
+
+% Quality check
+if isempty(info.numworms) || isempty(info.tracklength)
+    error('User Error. The Index tab in your .xlsx file contains missing/incorrect values related to the number of worms or track length.');
+end
+
+% Unique IDs for worms
+[I, J] = find(contains(headers, {'UID', 'ID'}));
+if ~isempty(I) && ~isempty(J)
+    [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
-    
-    if ~isequal(numel(info.wormUIDs),numel(info.pixelspercm(:,1)))
-        error('User Error. There are missing values in required columns.');
-    end
-    
+end
+
+% Camera sizing parameter (pixels per cm)
+refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
+[I, J] = find(contains(headers, refstr));
+if ~isempty(I) && ~isempty(J)
+info.pixelspercm(:,1) = xlsread(info.calledfile, 'Index', strcat(...
+    alphabet(J), num2str(I+1),...
+    ':',alphabet(J), num2str(info.numworms+1)));
+end
+
+if ~isequal(numel(info.wormUIDs),numel(info.pixelspercm(:,1)))
+    error('User Error. There appears to be missing values in the pixels per cm column.');
+end
+
+% Sampling frequency (value is 'Frame recorded every X seconds' - this is the input given to Basler's Pylon Viewer software)
+refstr = {'frame', 'Frame', 'rate', 'Rate', 'sample'};
+[I, J] = find(contains(headers, refstr));
+if ~isempty(I) && ~isempty(J)
+info.samplefreq(:,1) = xlsread(info.calledfile, 'Index', strcat(...
+    alphabet(J), num2str(I+1),...
+    ':',alphabet(J), num2str(info.numworms+1)));
+else
+    disp('No sampling frequency values provided. The program will assume a frame rate (i.e. sampling frequency) of 1 image every 2 seconds.');
+    info.samplefreq(:,1) = repmat(2,info.numworms,1);
+end
+
+%% Import experimental information for thermotaxis assays
+if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_22') ...
+        || contains(info.assaytype, 'Iso_22') || contains(info.assaytype, 'Thermo_22')
     % Gradient reference, generally the starting location of worms in the
     % gradient (e.g. T(start))
     refstr = {'T(start)', 'T(ref)', 'T(odor)', 'Gradient(start)', 'Gradient(ref)'};
@@ -59,8 +76,8 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
             ':',alphabet(J), num2str(info.numworms+1)));
     end
     
-     % Gradient min value
-    refstr = {'Gradient low', 'gradient low', 'Low','min', 'Min'};
+    % Gradient min value
+    refstr = {'Low gradient', 'Gradient low', 'Low','min', 'Min'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
         info.gradient.min = xlsread(info.calledfile, 'Index', strcat(...
@@ -68,8 +85,8 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
             ':',alphabet(J), num2str(info.numworms+1)));
     end
     
-     % Gradient max value
-    refstr = {'Gradient High', 'gradient high', 'High', 'max', 'Max'};
+    % Gradient max value
+    refstr = {'High Gradient', 'Gradient high', 'High', 'max', 'Max'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
         info.gradient.max = xlsread(info.calledfile, 'Index', strcat(...
@@ -85,33 +102,32 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
             alphabet(J), num2str(I+1),...
             ':',alphabet(J), num2str(info.numworms+1)));
     end
-end
-%% Import assay-specific parameters for thermotaxis assays
-%   Assigns a landmark camera, which is either the Camera on which an odor
-%   is placed, or the Tstart camera, for non-odor experiments.
-%
-%   Contains hardwired alignment values for the two cameras found in the
-%   Hallem Lab Thermotaxis Rig (the Collection Epoch name/value pairs). The
-%   specific values used depend on how the cameras were aligned, which can
-%   change over time. When it does change, users should add a new case.
-
-if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_22') ...
-        || contains(info.assaytype, 'Iso_22') || contains(info.assaytype, 'Thermo_22')
     
-    
+    %% Import assay-specific parameters for thermotaxis assays
     % If the assay type selected is Multisensory or Isothermal + Odor
     if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_22')
         
-        % Import Landmark Coodinates/Camera
-        info.ref.x = xlsread(info.calledfile, 'Index', strcat('I2:I', num2str(1+info.numworms)))';
-        info.ref.y = xlsread(info.calledfile, 'Index', strcat('J2:J', num2str(1+info.numworms)))';
+        % Import Landmark Coodinates
+        refstr = {'OdorXCoord','XCoord', 'X coordinates', 'RefXCoord'};
+        [I, J] = find(contains(headers, refstr));
+        if ~isempty(I) && ~isempty(J)
+            info.ref.x = xlsread(info.calledfile, 'Index', strcat(...
+                alphabet(J), num2str(I+1),...
+                ':',alphabet(J), num2str(info.numworms+1)));
+        end
         
+        refstr = {'OdorYCoord','YCoord', 'Y coordinates', 'RefYCoord'};
+        [I, J] = find(contains(headers, refstr));
+        if ~isempty(I) && ~isempty(J)
+            info.ref.y = xlsread(info.calledfile, 'Index', strcat(...
+                alphabet(J), num2str(I+1),...
+                ':',alphabet(J), num2str(info.numworms+1)));
+        end
         
         % Quality Checks of Landmark Coordinates
         if ~isequal(numel(info.ref.x),numel(info.ref.y),numel(info.wormUIDs))
-            error('User Error. The Index tab in your .xlsx file contains missing values in columns H-I.');
+            error('User Error. The Index tab in your .xlsx file contains missing values in columns containing landmark X/Y coordinates.');
         end
-        
         
         % Odor Scoring Region
         [~, info.SR.shape] = xlsread(info.calledfile, 'Index', 'A14');
@@ -130,8 +146,16 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
     % If the assay type is a Pure isothermal (4) or Pure thermotaxis (1)
     if contains(info.assaytype, 'Iso_22') || contains(info.assaytype, 'Thermo_22')
         
-        % Import Landmark Coodinates/Camera
-        [info.ref.x,info.ref.y] = deal(NaN(1,info.numworms)); %Will populate this later.
+        % Import Landmark Coodinates
+        refstr = {'XCoord', 'X coordinates', 'RefXCoord'};
+        [I, J] = find(contains(headers, refstr));
+        if ~isempty(I) && ~isempty(J)
+            info.ref.x = xlsread(info.calledfile, 'Index', strcat(...
+                alphabet(J), num2str(I+1),...
+                ':',alphabet(J), num2str(info.numworms+1)));
+        end
+        
+        [info.ref.y] = deal(NaN(1,info.numworms)); %Will populate this later.
         
     end
 end
@@ -139,36 +163,6 @@ end
 %% Import experimental information for chemotaxis assays
 if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
         || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')
-    disp('Reading data from file....');
-    [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
-    
-    alphabet = ['A':'Z'];
-    
-    [~, headers, ~] = xlsread(info.calledfile, 'Index');
-    
-    % Number of worm tracks to analyze
-    [I, J] = find(contains(headers, 'Number of Worms'));
-    if ~isempty(I) && ~isempty(J)
-        info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    % Length of track (number of frames)
-    [I, J] = find(contains(headers, 'Number of Images'));
-    if ~isempty(I) && ~isempty(J)
-        info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    if info.numworms == 0 || isempty(info.numworms) || isempty(info.tracklength)
-        error('User Error. The Index tab in your .xlsx file contains missing/incorrect values in column A.');
-    end
-    
-    % Unique IDs for worms
-    [I, J] = find(contains(headers, {'UID', 'ID'}));
-    if ~isempty(I) && ~isempty(J)
-        [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
-            alphabet(J), num2str(I+1),...
-            ':',alphabet(J), num2str(info.numworms+1)));
-    end
     
     % Orientation for non-thermotaxis assays
     [I, J] = find(contains(headers, {'Orientation', 'orientation'}));
@@ -202,27 +196,7 @@ if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') 
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
     
-    % Camera sizing parameter (pixels per cm)
-    refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
-    [I, J] = find(contains(headers, refstr));
-    info.pixelspercm(:,1) = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1),...
-        ':',alphabet(J), num2str(info.numworms+1)));
-    
-    if any(info.pixelspercm<10)
-        error('The Index sheet appears to have at least one pixels per cm column value that is are smaller than expected. Please make sure that column H contains the correct information. Then restart the tracker code.');
-    end
-    
-    if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
-        info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
-    end
-    
-end
-
-%% Import assay-specific parameters for chemotaxis assays
-if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
-        || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')
-    
+    %% Import assay-specific parameters for chemotaxis assays
     if contains(info.assaytype, 'Bact_4.9')
         info.radius = 4.9/2; % radius of bacterial chemotaxis assay circle
         info.scoringradius = 2/2; % radius of scoring circles
@@ -259,36 +233,6 @@ end
 
 %% Import experimental information for custom linear assays
 if contains(info.assaytype, 'Custom_linear')
-    disp('Reading data from file....');
-    [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
-    
-    alphabet = ['A':'Z'];
-    
-    [~, headers, ~] = xlsread(info.calledfile, 'Index');
-    
-    % Number of worm tracks to analyze
-    [I, J] = find(contains(headers, 'Number of Worms'));
-    if ~isempty(I) && ~isempty(J)
-        info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    % Length of track (number of frames)
-    [I, J] = find(contains(headers, 'Number of Images'));
-    if ~isempty(I) && ~isempty(J)
-        info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    if info.numworms == 0 || isempty(info.numworms) || isempty(info.tracklength)
-        error('User Error. The Index tab in your .xlsx file contains missing/incorrect values in column A.');
-    end
-    
-    % Unique IDs for worms
-    [I, J] = find(contains(headers, {'UID', 'ID'}));
-    if ~isempty(I) && ~isempty(J)
-        [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
-            alphabet(J), num2str(I+1),...
-            ':',alphabet(J), num2str(info.numworms+1)));
-    end
     
     % Orientation for non-thermotaxis assays
     [I, J] = find(contains(headers, {'Orientation', 'orientation'}));
@@ -297,6 +241,9 @@ if contains(info.assaytype, 'Custom_linear')
             alphabet(J), num2str(I+1),...
             ':',alphabet(J), num2str(info.numworms+1)));
         
+        % If plate orientation values aren't letters (e.g. Y/N), then this
+        % next code chunk assumes they are numbers (e.g. logical 1/0) and
+        % imports numbers.
         if isempty(info.plateorient)
             [info.plateorient] = xlsread(info.calledfile, 'Index', strcat(...
                 alphabet(J), num2str(I+1),...
@@ -326,27 +273,12 @@ if contains(info.assaytype, 'Custom_linear')
     refstr = {'alignment distance', 'Alignment distance', 'inter-port interval', 'Inter-alignment distance'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
-    info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1),...
-        ':',alphabet(J), num2str(info.numworms+1)));
-    end
-             
-    % Camera sizing parameter (pixels per cm)
-    refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
-    [I, J] = find(contains(headers, refstr));
-    info.pixelspercm = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1),...
-        ':',alphabet(J), num2str(info.numworms+1)));
-    
-    if any(info.pixelspercm<10)
-        error('The Index sheet appears to have at least one pixels per cm column value that is are smaller than expected. Please make sure that column H contains the correct information. Then restart the tracker code.');
+        info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
     end
     
-    if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
-        info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
-    end
-   
-     % Gradient min value
+    % Gradient min value
     refstr = {'Gradient low', 'gradient low', 'Low','min', 'Min'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
@@ -355,7 +287,7 @@ if contains(info.assaytype, 'Custom_linear')
             ':',alphabet(J), num2str(info.numworms+1)));
     end
     
-     % Gradient max value
+    % Gradient max value
     refstr = {'Gradient High', 'gradient high', 'High', 'max', 'Max'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
@@ -372,43 +304,13 @@ if contains(info.assaytype, 'Custom_linear')
             alphabet(J), num2str(I+1),...
             ':',alphabet(J), num2str(info.numworms+1)));
     end
-
+    
     
 end
 
 
 %% Import experimental information for basic information about worm tracks, ignoring gradients
 if contains(info.assaytype, 'Basic_info') || contains(info.assaytype, 'GasShift')
-    disp('Reading data from file....');
-    [~, info.sheets] = xlsfinfo(info.calledfile); % Detect names of tabs in excel spreadsheet
-    
-    alphabet = ['A':'Z'];
-    
-    [~, headers, ~] = xlsread(info.calledfile, 'Index');
-    
-    % Number of worm tracks to analyze
-    [I, J] = find(contains(headers, 'Number of Worms'));
-    if ~isempty(I) && ~isempty(J)
-        info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    % Length of track (number of frames)
-    [I, J] = find(contains(headers, 'Number of Images'));
-    if ~isempty(I) && ~isempty(J)
-        info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
-    end
-    
-    if info.numworms == 0 || isempty(info.numworms) || isempty(info.tracklength)
-        error('User Error. The Index tab in your .xlsx file contains missing/incorrect values in column A.');
-    end
-    
-    % Unique IDs for worms
-    [I, J] = find(contains(headers, {'UID', 'ID'}));
-    if ~isempty(I) && ~isempty(J)
-        [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
-            alphabet(J), num2str(I+1),...
-            ':',alphabet(J), num2str(info.numworms+1)));
-    end
     
     % Alignment ROIs for rotation - usually the gas ports or odor regions
     [I, J] = find(contains(headers, 'XL'));
@@ -432,26 +334,11 @@ if contains(info.assaytype, 'Basic_info') || contains(info.assaytype, 'GasShift'
     refstr = {'alignment distance', 'Alignment distance', 'inter-port interval', 'Inter-alignment distance'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
-    info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1),...
-        ':',alphabet(J), num2str(info.numworms+1)));
-    end
-             
-    % Camera sizing parameter (pixels per cm)
-    refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
-    [I, J] = find(contains(headers, refstr));
-    info.pixelspercm = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1),...
-        ':',alphabet(J), num2str(info.numworms+1)));
-    
-    if any(info.pixelspercm<10)
-        error('The Index sheet appears to have at least one pixels per cm column value that is are smaller than expected. Please make sure that column H contains the correct information. Then restart the tracker code.');
+        info.inter_port_interval = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1),...
+            ':',alphabet(J), num2str(info.numworms+1)));
     end
     
-    if size(info.pixelspercm,1)<info.numworms % If the number of imported pixels per cm values doesn't match the expected number of worms, pad with NaN, they're probably slopes
-        info.pixelspercm((size(info.pixelspercm,1)+1):info.numworms,1)=NaN;
-    end
-      
 end
 
 %% Import timing information when assays involve sequential presentation of stimuli
@@ -461,10 +348,10 @@ if contains(info.assaytype, 'GasShift')
     refstr = {'Stimulus Timing'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
-    [~,~,info.stim_timing] = xlsread(info.calledfile, 'Index', strcat(...
-        alphabet(J), num2str(I+1)));
-    
-    info.stim_timing = str2double(split(info.stim_timing, {',',';'}));
+        [~,~,info.stim_timing] = xlsread(info.calledfile, 'Index', strcat(...
+            alphabet(J), num2str(I+1)));
+        
+        info.stim_timing = str2double(split(info.stim_timing, {',',';'}));
     end
     
 end

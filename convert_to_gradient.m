@@ -1,11 +1,11 @@
 function[xvalsgradient] = convert_to_gradient(xvalscm, yvalscm)
-%% convert_to_gradient transforms track data (in cm) to values of the given
-%   gradient. 
+%% convert_to_gradient transforms track data (in cm) to values of the given non-thermotaxis gradient. 
 %   Requires a gradient slope (value-per-cm), and the min/max values of the gradient.
 %   It assumes that the alignment spots used to orient that tracks are 
-%   located equidistantly from the center of the gradient, such that
+%   located equidistantly from the center of the linear gradient, such that
 %   halfway between the alignment locations == halfway between the min/max
-%   gradient values
+%   gradient values. Also assumes that the gradient is oriented along the
+%   x-axis of the image.
 
 global info
 global vals

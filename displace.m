@@ -15,6 +15,8 @@ function [maxdisplacement, pathlength, meanspeed, instantspeed, displacement] = 
 %   pathlength = Total distance (in cm) traveled by each worm
 %   meanspeed = mean speed in mm/s...
 
+global info % This is important for importing information regarding the sampling frequency of the data 
+
 ptx= repmat(pt(1,:),size(xvals,1),1);
 pty= repmat(pt(2,:),size(xvals,1),1);
 displacement= sqrt((xvals-ptx).^2+(yvals-pty).^2);
@@ -23,8 +25,14 @@ maxdisplacement=max(displacement);
 osx = xvals(2:end,:); %x vals offset by one time point
 osy = yvals(2:end,:); %y vals offset by one time point
 hypotenuses = sqrt((osx - xvals(1:(size(xvals,1)-1),:)).^2+ (osy - yvals(1:(size(yvals,1)-1),:)).^2);
-meanspeed = mean((hypotenuses./2)*10, 'omitnan');%mm/second. This assumes that the sampling frequency is 1 frame/2 seconds. 
-instantspeed=(hypotenuses./2)*10;%mm/second. This assumes that the sampling frequency is 1 frame/2 seconds. 
+
+
+% Divide distance (cm) by the sample frequency of the images (number of seconds between each frame).
+% Then muliple distance by 10 to get mm/second.
+% Note that if sample frequency data is not provided by the user, a 1
+% frame/2 second sample rate is assumed by the program.
+meanspeed = mean((hypotenuses/info.samplefreq')*10, 'omitnan'); 
+instantspeed=(hypotenuses/info.samplefreq')*10; %mm/second. 
 
 tempx=xvals(2:end,:);
 tempy=yvals(2:end,:);
