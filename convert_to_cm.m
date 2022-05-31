@@ -6,7 +6,7 @@ function[xvalscm, yvalscm] = convert_to_cm(xvals, yvals, ppcm)
 %
 
 %% Convert Camera Data from pixels to cm, given known converstion rate.
-ppcmarray = repmat(ppcm, size(xvals,1),1);
-xvalscm=xvals./ppcmarray;
-yvalscm=yvals./ppcmarray;
+pixelpercmarray = repmat(ppcm, size(xvals,1),1);
+xvalscm=xvals./pixelpercmarray;
+yvalscm=yvals./pixelpercmarray;
 end

@@ -29,7 +29,7 @@ info.calledfile = fullfile(pathstr,name);
     'Isothermal Odor (22 cm arena)'; 'Pure Isothermal (22 cm arena)';...
     'Bacterial Assay (4.9 cm arena)'; 'CO2 Gradient (3.75 cm arena)';...
     'Pheromone Assay (5 cm arena)'; 'Odor Assay (5 cm arena)'; ...
-    'Gas Shift Chamber';...
+    'Gas Shift Chamber';'Sweat Accumulation'; ...
     'Custom linear assay'; 'Basic track info'},...
     'SelectionMode','single','ListSize',[200 150]);
 % Handle response
@@ -57,8 +57,10 @@ switch selection
     case 9
         info.assaytype = 'GasShift'; % Chamber for sequential presentation of gases
     case 10
-        info.assaytype = 'Custom_linear'; % Custom assay with a linear gradient
+        info.assaytype = 'SweatAccumulation'; % Sweat accumulation assay
     case 11
+        info.assaytype = 'Custom_linear'; % Custom assay with a linear gradient
+    case 12
         info.assaytype = 'Basic_info'; % Basic information about distances moved, no gradient information
 %     case 12
 %         info.assaytype = 'Custom_circle'; % Custom circular assay

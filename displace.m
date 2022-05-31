@@ -15,6 +15,7 @@ function [maxdisplacement, pathlength, meanspeed, instantspeed, displacement] = 
 %   pathlength = Total distance (in cm) traveled by each worm
 %   meanspeed = mean speed in mm/s...
 
+
 ptx= repmat(pt(1,:),size(xvals,1),1);
 pty= repmat(pt(2,:),size(xvals,1),1);
 displacement= sqrt((xvals-ptx).^2+(yvals-pty).^2);
