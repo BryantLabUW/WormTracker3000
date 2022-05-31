@@ -41,8 +41,8 @@ cC = plotxvals > neutZone.upperlimit; % a higher x value than the upper bound of
 nE = arrayfun(@(x) nnz(cE(:,x)), 1:size(plotxvals,2)); % applying the function nnz to every x column in cE
 nC = arrayfun(@(x) nnz(cC(:,x)), 1:size(plotxvals,2)); % applying the function nnz to every x column in cC
 
-n.E=nE*info.samplefreq'; % this tells us the amount of time (number of seconds) the worm spent closer to the experimental side.
-n.C=nC*info.samplefreq'; % this tells us the amount of time (number of seconds) the worm spent closer to the control side.
+n.E=nE.*info.samplefreq'; % this tells us the amount of time (number of seconds) the worm spent closer to the experimental side.
+n.C=nC.*info.samplefreq'; % this tells us the amount of time (number of seconds) the worm spent closer to the control side.
 
 %% Number of animals that end the assay on the experimental vs control side
 % First find the end of the track
