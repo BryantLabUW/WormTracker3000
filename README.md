@@ -7,9 +7,9 @@ In order to function properly, this software requires a specifically formatted e
 
 - Thermotaxis assays (i.e. those recorded using the thermotaxis behavioral rig)  
     + Pure Thermotaxis
-    + Thermotaxis + Odor
-    + Isothermal Odor
-    + Pure Isothermal
+    + Thermotaxis + Odor (currently not implemented)
+    + Isothermal Odor (currently not implemented)
+    + Pure Isothermal (currently not implemented)
 - Chemotaxis assays (i.e. those recorded using the chemotaxis tracking stations)
     + Bacteria assay (4.9 cm arena)
     + CO2 assay (3.75 cm arena)
@@ -41,8 +41,11 @@ The index tab must also include the following labeled columns (capitalization ma
     - "XR": x-coordinates for right-side reference point (e.g. right gas port or odor centroid)
     - "YR": y-coordinates for right-side reference point (e.g. right gas port or odor centroid)
     - "Alignment distance": distance in cm between left-side and right-side reference points
-- For general linear gradients:  
+- For general linear gradients and thermal gradients:  
     - "Low gradient": lowest gradient value in assay
     - "High gradient": greatest gradient value in assay
+    - "Distance between": distance between high and low gradient values
     - "Gradient slope": change in gradient per cm
+- For thermal gradients:
+    - "T(start): temperature worms start at
 
