@@ -7,10 +7,10 @@ global tracks
 global vals
 
 %% Calculate path and max displacement for generating a distance ratio, in combination with the maximum distance moved.
-% I currently don't need the travelpath and pathlength data, but it might
+% I currently don't need the pathlength data, but it might
 % come in handy later. Since these values are already relative, I'm using
 % the ones that aren't adjusted relative to the input ports.
-[vals.maxdisplacement vals.pathlength vals.meanspeed vals.instantspeed]= displace([tracks.xvalscm(1,:);tracks.yvalscm(1,:)], tracks.xvalscm, tracks.yvalscm);
+[vals.maxdisplacement vals.pathlength vals.meanspeed vals.instantspeed vals.travelpath]= displace([tracks.xvalscm(1,:);tracks.yvalscm(1,:)], tracks.xvalscm, tracks.yvalscm);
 vals.distanceratio=vals.pathlength./vals.maxdisplacement; %Calculation of distance ratio, as defined in Castelletto et al 2014. Total distance traveled/maximum displacement.
 
 %% Calculating final resting place of each worm relative to the left and right alignment locations.

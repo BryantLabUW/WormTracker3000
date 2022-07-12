@@ -6,8 +6,8 @@ function [] = WormTracker3000()
 %
 %   Code designed and created by Astra S. Bryant, PhD
 %
-%   Version 0.2
-%   Version Date: May/June 2022
+%   Version 0.3
+%   Version Date: July 2022
 
 close all; clear all
 warning('off');
