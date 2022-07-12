@@ -1,4 +1,4 @@
-function [maxdisplacement, pathlength, meanspeed, instantspeed, displacement] = displace(pt,xvals, yvals)
+function [maxdisplacement, pathlength, meanspeed, instantspeed, travelpath, displacement] = displace(pt,xvals, yvals)
 %displace(pt, xvals, yvals)
 %   This function calculates the euclidean distance between a two sets of x/y
 %   coordinates. Specifically written to calculate the distance between a series of coordinates and a starting point.
