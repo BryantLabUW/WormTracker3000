@@ -26,8 +26,6 @@ saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
         plotit = 1;
         while plotit>0 % loop through the subset plotter until you get one you like.
             n = 10; % number of tracks to plot
-%             C=cbrewer('qual','Dark2',n,'PCHIP');
-%             set(groot,'defaultAxesColorOrder',C);
             rng('shuffle'); % Seeding the random number generator to it's random.
             p = randperm(size(xvals,2),n);
             
@@ -72,7 +70,7 @@ global info
 
 figure;
 movegui('northeast');
-C=cbrewer('qual','Set1',size(CPortStdLoc.x,2),'PCHIP');
+C=brewermap(size(xvals,2),'Dark2'); % set color scheme
 set(groot,'defaultAxesColorOrder',C);
 hold on;
 

@@ -87,7 +87,7 @@ end
 function [fig] = DrawThePlot(xvals, yvals, name)
 
 fig=figure;
-C=cbrewer('qual','Set1',size(xvals,2),'PCHIP'); % set color scheme
+C=brewermap(size(xvals,2),'Dark2'); % set color scheme
 set(groot,'defaultAxesColorOrder',C);  % apply color scheme. Comment this out if you'd rather use matlabs default colors.
 hold on;
 
