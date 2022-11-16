@@ -22,7 +22,7 @@ saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
 
 
 %% Make a plot with a random subset of the tracks
-    if size(xvals,2)>10;
+   if info.subsetlogic > 0
         plotit = 1;
         while plotit>0 % loop through the subset plotter until you get one you like.
             n = 10; % number of tracks to plot

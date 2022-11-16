@@ -45,7 +45,7 @@ saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
 
 
 %% Make a plot with a random subset of the tracks
-if size(xvals,2)>10
+if info.subsetlogic > 0
     
     plotit = 1;
     movegui('northeast');
