@@ -40,28 +40,40 @@ end
 switch selection
     case 1
         info.assaytype = 'Thermo_22'; % Pure Thermotaxis Gradient
+        info.presets = 'Thermotaxis';
     case 2
         info.assaytype = 'OdorThermo_22'; % Multisensory Experiment, i.e. Odor + Thermal Gradient
+        info.presets = 'Thermotaxis';
     case 3
         info.assaytype = 'Odor_22'; % Pure Odor Experiment 22 cm arena, i.e. Odor on isothermal plate
+        info.presets = 'Odors/Gas/Bacteria';
     case 4
         info.assaytype = 'Iso_22'; % Isothermal 22cm arena, i.e. unstimulated experiment
+        info.presets = 'Basic info';
     case 5
         info.assaytype = 'Bact_4.9'; % Bacterial Assay (4.9 cm arena)
+        info.presets = 'Odors/Gas/Bacteria';
     case 6
         info.assaytype = 'C02_3.75'; % C02 Assay (3.75 cm arena)
+        info.presets = 'Odors/Gas/Bacteria';
     case 7
         info.assaytype = 'Pher_5'; % Pheromone Assay (5 cm arena)
+        info.presets = 'Odors/Gas/Bacteria';
     case 8
         info.assaytype = 'Odor_5'; % Odor Assay (5 cm arena)
+        info.presets = 'Odors/Gas/Bacteria';
     case 9
         info.assaytype = 'GasShift'; % Chamber for sequential presentation of gases
+         info.presets = 'Basic info';
     case 10
         info.assaytype = 'SweatAccumulation'; % Sweat accumulation assay
+         info.presets = 'Basic info';
     case 11
         info.assaytype = 'Custom_linear'; % Custom assay with a linear gradient
+         info.presets = 'Thermotaxis';
     case 12
         info.assaytype = 'Basic_info'; % Basic information about distances moved, no gradient information
+        info.presets = 'Basic info';
 %     case 12
 %         info.assaytype = 'Custom_circle'; % Custom circular assay
 end

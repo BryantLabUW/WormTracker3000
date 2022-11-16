@@ -48,4 +48,5 @@ The index tab must also include the following labeled columns (capitalization ma
     - "Gradient slope": change in gradient per cm
 - For thermal gradients:
     - "T(start): temperature worms start at
+    - "T(s) XCoord": Landmark coordinate indicating pixel value of T(start) temperature
 

@@ -4,53 +4,63 @@ function [] = save_data()
 global info
 global vals
 
-if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
-        || contains(info.assaytype, 'Pher_5') || contains(info.assaytype, 'Odor_5')
-    
-    headers={'Distance_Ratio', 'Mean_Speed_mm_per_s', ...
-        'Pathlength_cm', 'Final_Location_Relative_to_Control_cm', ...
-        'Final_Location_Relative_to_Experimental_cm', ...
-        'Time_in_Control_Zone_sec', 'Time_in_Experimental_Zone_sec'};
-    T=table(vals.distanceratio', vals.meanspeed', ...
-        vals.pathlength', vals.EndLoc.Cport', ...
-        vals.EndLoc.Eport', vals.zonetime.C',...
-        vals.zonetime.E','VariableNames',...
-        headers);
-    writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
-    
-    TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
+info.analysis_selection(~contains(info.analysis_selection, 'No Plots')); %Remove 'No plots' cell if present
+if any(contains(info.analysis_selection, 'Final location relative to odor'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Final location relative to odor')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Final_Location_Relative_to_Control_cm', 'Final_Location_Relative_to_Experimental_cm'];
+end
+
+if any(contains(info.analysis_selection, 'Time in Odor Zones'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Time in Odor Zones')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Time_in_Control_Zone_sec', 'Time_in_Experimental_Zone_sec'];
+end
+
+if any(contains(info.analysis_selection, 'Number of Worms in Zone(s)'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms in Zone(s)')); %Remove placeholder
+        TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
         {'number_of_worms_ending_in_Control_Zone', 'number_of_worms_ending_in_Experimenal_Zone'});
     writetable(TT,fullfile(info.pathstr,info.name, strcat(info.name,'_Ctrls_vs_Exp_count.xlsx')));
-    
-    TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
-    writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx')));
+end
 
-    
-elseif contains(info.assaytype, 'Custom_linear') || contains(info.assaytype, 'Thermo_22')
-    headers={'Final_location_in_gradient', 'Change_in_gradient_location',...
-        'Distance_Ratio', 'Mean_Speed_mm_per_s', ...
-        'Pathlength_cm'};
-    T=table(vals.finalgradientval', vals.gradientdiff',...
-        vals.distanceratio', vals.meanspeed', ...
-        vals.pathlength','VariableNames',...
-        headers);
-    
-    writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
-    
-elseif contains(info.assaytype, 'Basic_info')
-    headers={'Distance_Ratio', 'Mean_Speed_mm_per_s', ...
-        'Pathlength_cm'};
-    T=table(vals.distanceratio', vals.meanspeed', ...
-        vals.pathlength','VariableNames',...
-        headers);
-    
-    writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
-
+if any(contains(info.analysis_selection, 'Instant Speed'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Instant Speed')); 
     TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
-    writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx')));
-    
+    writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx'))); 
+end
+
+if any(contains(info.analysis_selection, 'Travel Path'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Travel Path')); 
     TTTT=table(vals.travelpath,'VariableNames',{'TravelPath'});
     writetable(TTTT,fullfile(info.pathstr,info.name,strcat(info.name,'_travelpath.xlsx')));
-    
 end
+
+for X = 1:length(info.analysis_selection)
+    switch info.analysis_selection{X}
+        case 'Distance Ratio'
+            T(:,X) = vals.distanceratio';
+        case 'Mean Speed'
+            T(:,X) = vals.meanspeed';
+        case 'Pathlength'
+            T(:,X) = vals.pathlength';
+        case 'Final location in gradient'
+            T(:,X) = vals.finalgradientval'; 
+        case 'Change in gradient location'
+            T(:,X) = vals.gradientdiff';
+        case 'Final_Location_Relative_to_Control_cm'
+            T(:,X) = vals.EndLoc.Cport';
+        case 'Final_Location_Relative_to_Experimental_cm'
+            T(:,X) = vals.EndLoc.Eport';
+        case 'Time_in_Control_Zone_sec'
+            T(:,X) = vals.zonetime.C';
+        case 'Time_in_Experimental_Zone_sec'
+            T(:,X) = vals.zonetime.E';        
+    end
+end
+
+headers = strrep(info.analysis_selection, ' ', '_');    
+T = array2table(T, 'VariableNames', headers);
+writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
+
 end
