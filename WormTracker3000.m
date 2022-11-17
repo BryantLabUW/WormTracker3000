@@ -6,8 +6,8 @@ function [] = WormTracker3000()
 %
 %   Code designed and created by Astra S. Bryant, PhD
 %
-%   Version 0.3
-%   Version Date: July 2022
+%   Version 0.5
+%   Version Date: Nov 2022
 
 close all; clear all
 warning('off');
@@ -15,10 +15,6 @@ global info
 global dat
 global vals
 global tracks
-
-% %% User Provided Variables (used during plotting) - logical values
-% subsetplot = 1; %Generate subset plot y/n (logical)? Note: if there are less than 10 worms, the subset plot won't be generated anyway.
-% individualplots = 0; % Generate individual plots for each track y/n (logical)?
 
 %% Load experimental parameters and data
 load_files();
@@ -32,6 +28,11 @@ load_params()
 
 %% Load track data
 load_tracks()
+
+%% Load overlay information (if exists)
+if any(contains(info.sheets, 'Overlay'))
+    load_overlay()
+end
 
 %% Process data
 if contains(info.assaytype, 'Bact_4.9') || contains(info.assaytype, 'C02_3.75') ...
