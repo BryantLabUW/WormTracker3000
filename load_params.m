@@ -38,6 +38,12 @@ if ~isempty(I) && ~isempty(J)
         ':',alphabet(J), num2str(info.numworms+1)));
 end
 
+% Quality check
+if info.numworms > size(info.wormUIDs,1)
+    info.numworms = size(info.wormUIDs,1)
+    disp('Warning, the number of unique IDs found is less than the user-specified number of worms. The number of worms variable has been adjusted to match available data.')
+end
+
 % Camera sizing parameter (pixels per cm)
 refstr = {'pixels per cm', 'ppcm', 'pixelspercm'};
 [I, J] = find(contains(headers, refstr));
@@ -355,5 +361,6 @@ if contains(info.assaytype, 'GasShift')
     end
     
 end
+
 
 end
