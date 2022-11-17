@@ -60,7 +60,7 @@ if any(contains(info.sheets, 'Overlay'))
     hold on
     for i = 1:info.overlay.CatNum
         I = find(dat.overlay.Event == temp{i});
-        plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',10);
+        plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',5);
     end
     hold off
     
