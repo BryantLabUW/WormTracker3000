@@ -1,5 +1,5 @@
 function [] = plot_basic(xvals, yvals, name, pathstr)
-%% plot_linear plots worm tracks as cm values without any gradient information
+%% plot_basic plots worm tracks as cm values without any gradient information
 
 %% Make a plot with all the tracks, then save it.
 global info
@@ -7,12 +7,6 @@ fig = DrawThePlot(xvals, yvals, name);
 movegui('northeast');
 
 ax=get(fig,'CurrentAxes');
-if contains(info.assaytype, 'Thermo_22')
-    set(ax,'XLim',[min(round(min(xvals)))-1 max(round(max(xvals)))+1]);
-    set(ax, 'YLim', [-22.5 0]);
-elseif contains(info.assaytype,'Custom_linear')
-    set(ax,'XLim',[min(round(min(xvals)))-1 max(round(max(xvals)))+1]);
-end
 
 setaxes = 1;
 while setaxes>0 % loop through the axes selection until you're happy

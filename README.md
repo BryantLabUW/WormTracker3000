@@ -50,3 +50,10 @@ The index tab must also include the following labeled columns (capitalization ma
     - "T(start): temperature worms start at
     - "T(s) XCoord": Landmark coordinate indicating pixel value of T(start) temperature
 
+## Optioanl user inputs
+Users may provide an "Overlay" tab that plots experimental events on top of worm tracks. 
+The overlay tab should contain the following columns:  
+
+- UID, matching the worm UID the event belongs to)
+- Frame, a number that enables the code to locate the X/Y coordinates of the event by indexing the rows of the appropriate UID tab)
+- Event, a categorical string. Up to 6 distinct event types are supported.
