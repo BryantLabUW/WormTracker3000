@@ -7,8 +7,13 @@ fig = DrawThePlot(xvals, yvals, name);
 movegui('northeast');
 
 ax=get(fig,'CurrentAxes');
-%set(ax,'XLim',[min(round(min(xvals)))-1 max(round(max(xvals)))+1]);
-set(ax,'XLim',[min(info.gradient.min) max(info.gradient.max)]);
+if contains(info.assaytype, 'Thermo_22')
+    set(ax,'XLim',[min(info.gradient.min) max(info.gradient.max)]);
+    set(ax, 'YLim', [-22.5 0]);
+elseif contains(info.assaytype,'Custom_linear')
+    set(ax,'XLim',[min(info.gradient.min) max(info.gradient.max)]);
+end
+
 
 setaxes = 1;
 while setaxes>0 % loop through the axes selection until you're happy
@@ -43,6 +48,32 @@ end
 saveas(gcf, fullfile(pathstr,[name,'/', name, '-all.eps']),'epsc');
 saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
 
+%% Make a plot with an overlay
+if any(contains(info.sheets, 'Overlay'))
+    global dat
+    disp('Generating Overlay Plot')
+    
+    % Find the X/Y coordinates that match the ovelay event UID and frame
+    for i = 1:info.overlay.Num
+        I = find(contains(info.wormUIDs, dat.overlay.UIDs{i}));
+        dat.overlay.Xvals(i,1) = xvals(dat.overlay.Frame(i), I);
+        dat.overlay.Yvals(i,1) = yvals(dat.overlay.Frame(i), I);
+    end
+    % Drawing the Overlay
+    overlayicons = ["diamond", "^", "square", "x", "*", "o"]; % Change this line of code to alter the style of overlay icons used
+    disp('Warning: icon identity may change if the number of overlay category types fluctuates across assays.');
+    disp('For stability, set all overlay event icons to the same marker type in the plot_basic.m file (near the code that generates this message).');
+    temp = categories(dat.overlay.Event);
+    hold on
+    for i = 1:info.overlay.CatNum
+        I = find(dat.overlay.Event == temp{i});
+        plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',10);
+    end
+    hold off
+    
+    saveas(gcf, fullfile(pathstr,[name,'/', name, '-overlay.eps']),'epsc');
+    saveas(gcf, fullfile(pathstr,[name,'/', name,'-overlay.png']));
+end
 
 %% Make a plot with a random subset of the tracks
 if info.subsetlogic > 0
