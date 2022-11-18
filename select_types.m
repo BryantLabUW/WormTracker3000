@@ -5,14 +5,16 @@ global info
 plottypes = {'Plots Only', 'No Plots', 'Subset Tracks'...
     'Distance Ratio', 'Mean Speed', 'Pathlength', ...
     'Instant Speed', 'Travel Path', ...
-    'Final location in gradient', 'Change in gradient location'};
+    'Final location in gradient', 'Change in gradient location',...
+    'Distance up/down gradient', 'Time up/down gradient', ...
+    };
 
 if contains(info.presets, 'Basic info')
     preset_selection = [4, 5, 6, 7, 8];    
 elseif contains(info.presets, 'Thermotaxis')
-    preset_selection = [10, 4, 5, 6];
+    preset_selection = [10, 4, 5, 6, 11];
 elseif contains(info.presets, 'Odors/Gas/Bacteria')
-    preset_selection = [4, 5, 6, 7, 11, 12, 13];
+    preset_selection = [4, 5, 6, 7, 13, 14, 15];
     plottypes = [plottypes ...
         {'Final location relative to odor', 'Time in Odor Zones', 'Number of Worms in Zone(s)'}];
 elseif contains(info.presets, 'Custom Linear')

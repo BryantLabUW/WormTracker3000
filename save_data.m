@@ -17,6 +17,18 @@ if any(contains(info.analysis_selection, 'Time in Odor Zones'))
         'Time_in_Control_Zone_sec', 'Time_in_Experimental_Zone_sec'];
 end
 
+if any(contains(info.analysis_selection, 'Distance up/down gradient'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Distance up/down gradient')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Distance_up_gradient', 'Distance_down_gradient'];
+end
+
+if any(contains(info.analysis_selection, 'Time up/down gradient'))
+    info.analysis_selection(~contains(info.analysis_selection, 'Time up/down gradient')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Time_up_gradient', 'Time_down_gradient'];
+end
+
 if any(contains(info.analysis_selection, 'Number of Worms in Zone(s)'))
     info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms in Zone(s)')); %Remove placeholder
         TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
@@ -55,9 +67,18 @@ for X = 1:length(info.analysis_selection)
         case 'Time_in_Control_Zone_sec'
             T(:,X) = vals.zonetime.C';
         case 'Time_in_Experimental_Zone_sec'
-            T(:,X) = vals.zonetime.E';        
+            T(:,X) = vals.zonetime.E';   
+        case 'Distance_up_gradient'
+             T(:,X) = vals.sumUp'; 
+        case 'Distance_down_gradient'
+            T(:,X) = vals.sumDown'; 
+        case 'Time_up_gradient'
+            T(:,X) = vals.timeUp'; 
+        case 'Time_down_gradient'
+            T(:,X) = vals.timeDown'; 
     end
 end
+
 
 headers = strrep(info.analysis_selection, ' ', '_');    
 T = array2table(T, 'VariableNames', headers);
