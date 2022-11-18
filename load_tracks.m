@@ -37,14 +37,12 @@ for i=1:numworms
     if ~isempty(find(strcmp(sheets,sheet),1))
         testexists = importfileXLS(info.calledfile, sheet, strcat('D1:D',num2str(tracklength)));
         if ~isempty(testexists)
-            tempx(:,1) = importfileXLS(info.calledfile, sheet, strcat('D1:D',num2str(tracklength)));
-            tempy(:,1) = importfileXLS(info.calledfile, sheet, strcat('E1:E',num2str(tracklength)));
-            tempf(:,1) = importfileXLS(info.calledfile, sheet, strcat('C1:C',num2str(tracklength)));
-            xvals(1:length(tempx),i)=tempx;
-            yvals(1:length(tempy),i)=tempy;
-            frame(1:length(tempf),i)=tempf;
+            temp(:,:) = importfileXLS(info.calledfile, sheet, strcat('C1:E',num2str(tracklength)));
+            xvals(1:length(temp),i)=temp(:,2);
+            yvals(1:length(temp),i)=temp(:,3);
+            frame(1:length(temp),i)=temp(:,1);
         end
-        clear tempx tempy tempf
+        clear temp
     end
     
 end

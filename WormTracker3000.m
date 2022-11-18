@@ -68,7 +68,7 @@ elseif contains(info.assaytype, 'Custom_linear')
     [vals.finalgradientval,vals.gradientdiff] = quant_specific_linear(tracks.xvalsgradient);
     
 elseif contains(info.assaytype, 'Thermo_22')
-    [vals.finalgradientval,vals.gradientdiff] = quant_specific_linear(tracks.xvalsgradient);
+    [vals.finalgradientval,vals.gradientdiff, vals.sumDown, vals.sumUp, vals.timeDown, vals.timeUp] = quant_specific_linear(tracks.xvalsgradient);
 end
 
 %% Plotting and Saving

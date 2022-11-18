@@ -1,4 +1,4 @@
-function [finalgradientval, gradientdiff] = quant_specific_linear(xvals)
+function [finalgradientval, gradientdiff, sum_down, sum_up, count_down, count_up] = quant_specific_linear(xvals)
 %% quant_specific_linear includes additional analyses for single-worm linear assays.
 global info
 
@@ -24,5 +24,17 @@ startgradientval(startgradientval<info.gradient.min') = info.gradient.max(startg
 
 % Calculate change location of worm along the gradient
 gradientdiff=finalgradientval-startgradientval;
+
+%% Calculate amount of distance traveled either up or down gradient, and time spent traveling
+osx = xvals(2:end,:); %x vals offset by one time point
+diffx = osx - xvals(1:(size(xvals,1)-1),:);
+
+Indices = arrayfun(@(x) find(diffx(:, x) < 0), 1:info.numworms, 'UniformOutput', false);
+sum_down = arrayfun(@(x) sum(diffx(Indices{x}, x)), 1:info.numworms);
+count_down = arrayfun(@(x) numel(diffx(Indices{x}, x)), 1:info.numworms).* info.samplefreq'; % number of frames spent traveling down gradient * sample frequency (sec per frame)
+
+Indices = arrayfun(@(x) find(diffx(:, x) > 0), 1:info.numworms, 'UniformOutput', false);
+sum_up = arrayfun(@(x) sum(diffx(Indices{x}, x)), 1:info.numworms);
+count_up = arrayfun(@(x) numel(diffx(Indices{x}, x)), 1:info.numworms) .* info.samplefreq'; % number of frames spent traveling up gradient * sample frequency (sec per frame)
 
 end
