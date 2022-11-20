@@ -9,9 +9,9 @@ global dat
 %% Import tracks
 % Updated for single camera configuration
 
-    [dat.Xvals.Pixels, dat.Yvals.Pixels, dat.frame]=pull_coords(info.wormUIDs, info.tracklength, info.numworms);
-    disp('...done.');
-    
+[dat.Xvals.Pixels, dat.Yvals.Pixels, dat.frame]=pull_coords(info.wormUIDs, info.tracklength, info.numworms);
+disp('...done.');
+
 end
 
 function [xvals, yvals, frame] = pull_coords(wormUIDs, tracklength, numworms)
@@ -30,14 +30,14 @@ function [xvals, yvals, frame] = pull_coords(wormUIDs, tracklength, numworms)
 global info
 
 [xvals,yvals,frame] = deal(NaN(tracklength,numworms));
+[~, sheets]=xlsfinfo(info.calledfile);
 
 for i=1:numworms
-    [~, sheets]=xlsfinfo(info.calledfile);
+    disp(['loading file ', num2str(i), ' of ', num2str(numworms)]);
     sheet = [wormUIDs{i}];
     if ~isempty(find(strcmp(sheets,sheet),1))
-        testexists = importfileXLS(info.calledfile, sheet, strcat('D1:D',num2str(tracklength)));
-        if ~isempty(testexists)
-            temp(:,:) = importfileXLS(info.calledfile, sheet, strcat('C1:E',num2str(tracklength)));
+        temp(:,:) = xlsread(info.calledfile, sheet, strcat('C1:E',num2str(tracklength)));
+        if ~isempty(temp)
             xvals(1:length(temp),i)=temp(:,2);
             yvals(1:length(temp),i)=temp(:,3);
             frame(1:length(temp),i)=temp(:,1);

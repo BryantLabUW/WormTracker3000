@@ -4,48 +4,56 @@ function [] = save_data()
 global info
 global vals
 
-info.analysis_selection(~contains(info.analysis_selection, 'No Plots')); %Remove 'No plots' cell if present
+info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'No Plots')); %Remove 'No plots' cell if present
+
 if any(contains(info.analysis_selection, 'Final location relative to odor'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Final location relative to odor')); %Remove placeholder
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Final location relative to odor')); %Remove placeholder
     info.analysis_selection = [info.analysis_selection, ...
         'Final_Location_Relative_to_Control_cm', 'Final_Location_Relative_to_Experimental_cm'];
 end
 
 if any(contains(info.analysis_selection, 'Time in Odor Zones'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Time in Odor Zones')); %Remove placeholder
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Time in Odor Zones')); %Remove placeholder
     info.analysis_selection = [info.analysis_selection, ...
         'Time_in_Control_Zone_sec', 'Time_in_Experimental_Zone_sec'];
 end
 
 if any(contains(info.analysis_selection, 'Distance up/down gradient'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Distance up/down gradient')); %Remove placeholder
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Distance up/down gradient')); %Remove placeholder
     info.analysis_selection = [info.analysis_selection, ...
         'Distance_up_gradient', 'Distance_down_gradient'];
 end
 
 if any(contains(info.analysis_selection, 'Time up/down gradient'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Time up/down gradient')); %Remove placeholder
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Time up/down gradient')); %Remove placeholder
     info.analysis_selection = [info.analysis_selection, ...
         'Time_up_gradient', 'Time_down_gradient'];
 end
 
 if any(contains(info.analysis_selection, 'Number of Worms in Zone(s)'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms in Zone(s)')); %Remove placeholder
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms in Zone(s)')); %Remove placeholder
         TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
         {'number_of_worms_ending_in_Control_Zone', 'number_of_worms_ending_in_Experimenal_Zone'});
     writetable(TT,fullfile(info.pathstr,info.name, strcat(info.name,'_Ctrls_vs_Exp_count.xlsx')));
 end
 
+if any(contains(info.analysis_selection, 'Number of Worms Higher/Lower on Gradient'))
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms Higher/Lower on Gradient')); %Remove placeholder
+        TT=table(vals.fN, vals.fP, vals.fE, 'VariableNames', ...
+        {'number_of_worms_ending_down_gradient', 'number_of_worms_ending_up_gradient', 'number_of_worms_in_thresholded_exclusion_zone'});
+    writetable(TT,fullfile(info.pathstr,info.name, strcat(info.name,'_ending_category_count.xlsx')));
+end
+
 if any(contains(info.analysis_selection, 'Instant Speed'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Instant Speed')); 
-    TTT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
-    writetable(TTT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx'))); 
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Instant Speed')); 
+    TT=table(vals.instantspeed,'VariableNames',{'InstantSpeed'});
+    writetable(TT,fullfile(info.pathstr,info.name,strcat(info.name,'_instantspeed.xlsx'))); 
 end
 
 if any(contains(info.analysis_selection, 'Travel Path'))
-    info.analysis_selection(~contains(info.analysis_selection, 'Travel Path')); 
-    TTTT=table(vals.travelpath,'VariableNames',{'TravelPath'});
-    writetable(TTTT,fullfile(info.pathstr,info.name,strcat(info.name,'_travelpath.xlsx')));
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Travel Path')); 
+    TT=table(vals.travelpath,'VariableNames',{'TravelPath'});
+    writetable(TT,fullfile(info.pathstr,info.name,strcat(info.name,'_travelpath.xlsx')));
 end
 
 for X = 1:length(info.analysis_selection)
@@ -78,7 +86,6 @@ for X = 1:length(info.analysis_selection)
             T(:,X) = vals.timeDown'; 
     end
 end
-
 
 headers = strrep(info.analysis_selection, ' ', '_');    
 T = array2table(T, 'VariableNames', headers);
