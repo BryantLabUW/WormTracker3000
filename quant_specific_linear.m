@@ -1,6 +1,7 @@
 function [finalgradientval, gradientdiff, sum_down, sum_up, count_down, count_up] = quant_specific_linear(xvals)
 %% quant_specific_linear includes additional analyses for single-worm linear assays.
 global info
+global vals
 
 B = ~isnan(xvals);
 Indices = arrayfun(@(x) find(B(:, x), 1, 'last'), 1:info.numworms);
@@ -36,5 +37,16 @@ count_down = arrayfun(@(x) numel(diffx(Indices{x}, x)), 1:info.numworms).* info.
 Indices = arrayfun(@(x) find(diffx(:, x) > 0), 1:info.numworms, 'UniformOutput', false);
 sum_up = arrayfun(@(x) sum(diffx(Indices{x}, x)), 1:info.numworms);
 count_up = arrayfun(@(x) numel(diffx(Indices{x}, x)), 1:info.numworms) .* info.samplefreq'; % number of frames spent traveling up gradient * sample frequency (sec per frame)
+
+%% Number of animals that ended up lower versus higher on the gradient
+
+threshold = 0.1; % nominal threshold of distance for categories, in gradient values (i.e. temperature)
+
+% For how many worms is the final x position higher/lower on the gradient, thresholded?
+
+vals.fP = nnz(find(gradientdiff > threshold));
+vals.fN = nnz(find(gradientdiff < -threshold));
+vals.fE = info.numworms - (vals.fP + vals.fN);
+
 
 end
