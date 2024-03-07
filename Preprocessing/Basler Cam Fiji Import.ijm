@@ -1,14 +1,14 @@
 //User Inputs
 call("java.lang.System.gc");
 Folderpath="Jaidyn" // Path to data folder that contains subfolders with all the images for a single experimental run
-UID="test" // Name of subfolder containing all the images for a single experimental run (e.g. a single worm). Best practice: this folder is a unique ID corresponding to the experiment/worm
+UID="230810_01" // Name of subfolder containing all the images for a single experimental run (e.g. a single worm). Best practice: this folder is a unique ID corresponding to the experiment/worm
 
 // How many frames should be used for background subtraction?
 	BackgroundWindowStart="0"
 	BackgroundWindowStop="540"
 
 // How many images do you want to process? (This should probably match the total number of images in your experiment, but it doesn't have it.)
-	NumImages="50" //number of images to import
+	NumImages="540" //number of images to import
 
 // Set the pixels per cm camera scales. You should keep track of this number in your notes. Calculate the number by taking a photo of a ruler using the camera, then measure the pixels in a 1 cm distance in FIJI. 
 	// August 2023 settings:
