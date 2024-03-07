@@ -1,4 +1,4 @@
-function [] = WormTracker3000()
+ function [] = WormTracker3000()
 %%WormTracker3000 Hallem Lab general purpose software for analysis and plotting on worm tracks
 %   The Worm Tracker 3000 is a unified codebase for the analysis and
 %   plotting of worm tracks collected during the course of behavioral
