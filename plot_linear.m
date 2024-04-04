@@ -3,6 +3,7 @@ function [] = plot_linear(xvals, yvals, name, pathstr)
 
 %% Make a plot with all the tracks, then save it.
 global info
+
 fig = DrawThePlot(xvals, yvals, name);
 movegui('northeast');
 
@@ -49,6 +50,7 @@ saveas(gcf, fullfile(pathstr,[name,'/', name, '-all.eps']),'epsc');
 saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
 
 %% Make a plot with an overlay
+
 if any(contains(info.sheets, 'Overlay'))
     global dat
     disp('Generating Overlay Plot')
@@ -76,9 +78,10 @@ if any(contains(info.sheets, 'Overlay'))
 end
 
 %% Make a plot with a random subset of the tracks
-if info.subsetlogic > 0
-    
-    plotit = 1;
+answer = questdlg('Do you want to plot a subset of tracks?', 'Subset Plotting', 'Yes');
+    switch answer
+        case 'Yes'
+             plotit = 1;
     movegui('northeast');
     
     while plotit>0 % Loop through the subset plotter until you get one you like.
@@ -108,10 +111,49 @@ if info.subsetlogic > 0
     
     saveas(gcf, fullfile(pathstr,[name,'/', name, '- subset.eps']),'epsc');
     saveas(gcf, fullfile(pathstr,[name,'/', name,'- subset.png']));
+    end
+
+
+   
+
+
+%% Make a heatmap plot where the tracks are color coded by temperature
+answer = questdlg('Do you want to replot tracks as a heatmat?', 'Heatmap Plotting', 'Yes');
+    switch answer
+        case 'Yes'
+     setaxes = 1;
+     movegui('northeast');
+        while setaxes>0 % loop through the axes selection until you're happy
+            rangeL= min(info.gradient.min);
+            rangeH = max(info.gradient.max);
+            range = {num2str(rangeL), num2str(rangeH)};
+                  
+            answer = inputdlg({'Heatmap Range Min', 'Heatmap Range Max'}, ...
+                'Heatmap Parameters', 1, range);
+            range = [str2num(answer{1}), str2num(answer{2})];
+            
+            MakeTheHeatmap(xvals, range, name);
+            
+            answer = questdlg('Adjust Heatmap Params', 'Plot adjustment', 'Yes');
+            switch answer
+                case 'Yes'
+                    setaxes=1;
+                    close all
+                case 'No'
+                    setaxes=-1;
+                case 'Cancel'
+                    setaxes=-1;
+            end
+        end
+        close all
+         
+
+    saveas(gcf, fullfile(pathstr,[name,'/', name, '- heatmap.eps']),'epsc');
+    saveas(gcf, fullfile(pathstr,[name,'/', name,'- heatmap.png']));
+    end
 end
 
 
-end
 
 %% The bit that makes the figure
 % Oh look, an inline script!
@@ -136,3 +178,39 @@ set(gcf, 'renderer', 'Painters');
 
 end
 
+function [fig] = MakeTheHeatmap(xvals, range, name)
+% for tracks where the tracking ends early, fill in remaining with the last
+% number
+B = ~isnan(xvals);
+Indices = arrayfun(@(x) find(B(:, x), 1, 'last'), 1:info.numworms);
+A = arrayfun(@(x) subsasgn(xvals(:,x), substruct('()', {isnan(xvals(:,x))}), xvals(Indices(x), x)), 1:info.numworms, 'UniformOutput', false);
+A = cell2mat(A)';
+% Use hierarchical clustering to determine optimal order for rows
+% the method for the linkage is: Unweighted average distance (UPGMA), aka
+% average linkage clustering
+D = pdist(A);
+tree = linkage(D, 'average');
+leafOrder = optimalleaforder(tree, D);
+
+% Reorder tracks to reflect optimal leaf order
+A = A(leafOrder, :);
+
+figure ('Units','pixels', 'Position',[100 100 350 900 ])
+movegui('northeast');
+colormap(inferno());
+
+imagesc(A,range);
+set(gca,'XTickLabel',[]);
+ylabel('Worms');
+xlabel('Time (seconds)');
+colorbar
+
+title(gcf, strcat(name,'_Heatmap'),'Interpreter','none');
+
+
+
+saveas(gcf, fullfile(newdir,['/', n, '-heatmap.eps']),'epsc');
+saveas(gcf, fullfile(newdir,['/', n, '-heatmap.jpeg']),'jpeg');
+
+close all
+end
