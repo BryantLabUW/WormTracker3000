@@ -46,8 +46,8 @@ while setaxes>0 % loop through the axes selection until you're happy
             setaxes=-1;
     end   
 end
-saveas(gcf, fullfile(pathstr,[name,'/', name, '-all.eps']),'epsc');
-saveas(gcf, fullfile(pathstr,[name,'/', name,'-all.png']));
+
+exportgraphics(gcf, fullfile(pathstr,[name,'/', name, '-all.pdf']),'ContentType','vector');
 
 %% Make a plot with an overlay
 
@@ -72,9 +72,8 @@ if any(contains(info.sheets, 'Overlay'))
         plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',10);
     end
     hold off
+    exportgraphics(gcf, fullfile(pathstr,[name,'/', name, '-overlay.pdf']),'ContentType','vector');
     
-    saveas(gcf, fullfile(pathstr,[name,'/', name, '-overlay.eps']),'epsc');
-    saveas(gcf, fullfile(pathstr,[name,'/', name,'-overlay.png']));
 end
 
 %% Make a plot with a random subset of the tracks
@@ -109,20 +108,15 @@ answer = questdlg('Do you want to plot a subset of tracks?', 'Subset Plotting', 
         end
     end
     
-    saveas(gcf, fullfile(pathstr,[name,'/', name, '- subset.eps']),'epsc');
-    saveas(gcf, fullfile(pathstr,[name,'/', name,'- subset.png']));
+    exportgraphics(gcf, fullfile(pathstr,[name,'/', name, '-subset.pdf']),'ContentType','vector');
     end
 
-
-   
-
-
 %% Make a heatmap plot where the tracks are color coded by temperature
-answer = questdlg('Do you want to replot tracks as a heatmat?', 'Heatmap Plotting', 'Yes');
+answer = questdlg('Do you want to replot tracks as a heatmap?', 'Heatmap Plotting', 'Yes');
     switch answer
         case 'Yes'
      setaxes = 1;
-     movegui('northeast');
+     
         while setaxes>0 % loop through the axes selection until you're happy
             rangeL= min(info.gradient.min);
             rangeH = max(info.gradient.max);
@@ -131,9 +125,9 @@ answer = questdlg('Do you want to replot tracks as a heatmat?', 'Heatmap Plottin
             answer = inputdlg({'Heatmap Range Min', 'Heatmap Range Max'}, ...
                 'Heatmap Parameters', 1, range);
             range = [str2num(answer{1}), str2num(answer{2})];
-            
-            MakeTheHeatmap(xvals, range, name);
-            
+            fig3 = MakeTheHeatmap(xvals, range, name);
+            movegui('northeast');
+
             answer = questdlg('Adjust Heatmap Params', 'Plot adjustment', 'Yes');
             switch answer
                 case 'Yes'
@@ -145,12 +139,10 @@ answer = questdlg('Do you want to replot tracks as a heatmat?', 'Heatmap Plottin
                     setaxes=-1;
             end
         end
-        close all
          
-
-    saveas(gcf, fullfile(pathstr,[name,'/', name, '- heatmap.eps']),'epsc');
-    saveas(gcf, fullfile(pathstr,[name,'/', name,'- heatmap.png']));
+    exportgraphics(gcf, fullfile(pathstr,[name,'/', name, '- heatmap.pdf']),'ContentType','vector');
     end
+    close all
 end
 
 
@@ -181,6 +173,7 @@ end
 function [fig] = MakeTheHeatmap(xvals, range, name)
 % for tracks where the tracking ends early, fill in remaining with the last
 % number
+global info
 B = ~isnan(xvals);
 Indices = arrayfun(@(x) find(B(:, x), 1, 'last'), 1:info.numworms);
 A = arrayfun(@(x) subsasgn(xvals(:,x), substruct('()', {isnan(xvals(:,x))}), xvals(Indices(x), x)), 1:info.numworms, 'UniformOutput', false);
@@ -195,22 +188,26 @@ leafOrder = optimalleaforder(tree, D);
 % Reorder tracks to reflect optimal leaf order
 A = A(leafOrder, :);
 
-figure ('Units','pixels', 'Position',[100 100 350 900 ])
+fig = figure ('Units','pixels', 'Position',[100 100 350 900 ]);
 movegui('northeast');
 colormap(inferno());
 
 imagesc(A,range);
-set(gca,'XTickLabel',[]);
+if all(info.samplefreq == info.samplefreq(1))
+    xaxis_minutes = info.tracklength*info.samplefreq(1)/60;
+    if  xaxis_minutes > 15 %if recording length longer than 15 minutes, have x-axis tick every 10 minutes.
+    xticks(0:10*60/info.samplefreq(1):info.tracklength);
+    xticklabels(string([0:10:xaxis_minutes]));
+    xlabel('Time (minutes)');
+    else
+        xlabel('Time (samples)');
+    end
+end
+
+
+
 ylabel('Worms');
-xlabel('Time (seconds)');
+
 colorbar
 
-title(gcf, strcat(name,'_Heatmap'),'Interpreter','none');
-
-
-
-saveas(gcf, fullfile(newdir,['/', n, '-heatmap.eps']),'epsc');
-saveas(gcf, fullfile(newdir,['/', n, '-heatmap.jpeg']),'jpeg');
-
-close all
 end
