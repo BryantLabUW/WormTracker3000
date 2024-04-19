@@ -70,7 +70,9 @@ end
 
 
 %% Make a plot with a random subset of the tracks
-if info.subsetlogic > 0
+answer = questdlg('Do you want to plot a subset of tracks?', 'Subset Plotting', 'Yes');
+    switch answer
+        case 'Yes'
     plotit = 1;
     movegui('northeast');
     

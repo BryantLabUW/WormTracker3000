@@ -3,24 +3,24 @@ function [] = select_types()
 
 global info
 plottypes = {'Plots Only', 'No Plots', ...
-    'Subset Tracks', 'Distance Ratio', ...
+    'Distance Ratio', ...
     'Mean Speed', 'Pathlength', ...
     'Instant Speed', 'Travel Path', ...
     'Final location in gradient', 'Change in gradient location',...  
     };
 
 if contains(info.presets, 'Basic info')
-    preset_selection = [4, 5, 6, 7, 8];    
+    preset_selection = [3, 4, 5, 6, 7];    
 elseif contains(info.presets, 'Thermotaxis')
-    preset_selection = [10, 4, 5, 11, 12];
+    preset_selection = [2, 10, 3, 4, 5, 10, 11, 12, 14];
     plottypes = [plottypes ...
-        {'Distance up/down gradient', 'Number of Worms Higher/Lower on Gradient'}];
+        {'Distance up/down gradient','Time up/down gradient', 'Min/Max value on gradient', 'Number of Worms Higher/Lower on Gradient', 'Starting Position on Gradient'}];
 elseif contains(info.presets, 'Odors/Gas/Bacteria')
-    preset_selection = [4, 5, 6, 7, 11, 12, 13];
+    preset_selection = [3, 4, 5, 6, 10, 11, 12];
     plottypes = [plottypes ...
         {'Final location relative to odor', 'Time in Odor Zones', 'Number of Worms in Zone(s)'}];
 elseif contains(info.presets, 'Custom Linear')
-    preset_selection = [10, 4, 5, 6];
+    preset_selection = [9, 3, 4, 5];
     plottypes = [plottypes ...
         {'Number of Worms Higher/Lower on Gradient'}];
 end
@@ -45,12 +45,5 @@ if any(contains(info.analysis_selection, 'Plots Only'))
 else
     info.analysislogic = 1;
 end
-
-if any(contains(info.analysis_selection, 'Subset Tracks'))
-    info.subsetlogic = 1;
-else
-    info.subsetlogic = 0;
-end
-
 
 end

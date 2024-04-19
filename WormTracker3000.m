@@ -1,4 +1,4 @@
-function [] = WormTracker3000()
+ function [] = WormTracker3000()
 %%WormTracker3000 Hallem Lab general purpose software for analysis and plotting on worm tracks
 %   The Worm Tracker 3000 is a unified codebase for the analysis and
 %   plotting of worm tracks collected during the course of behavioral
@@ -68,7 +68,7 @@ elseif contains(info.assaytype, 'Custom_linear')
     [vals.finalgradientval,vals.gradientdiff] = quant_specific_linear(tracks.xvalsgradient);
     
 elseif contains(info.assaytype, 'Thermo_22')
-    [vals.finalgradientval,vals.gradientdiff, vals.sumDown, vals.sumUp, vals.timeDown, vals.timeUp] = quant_specific_linear(tracks.xvalsgradient);
+    [vals.finalgradientval,vals.gradientdiff, vals.sumDown, vals.sumUp, vals.timeDown, vals.timeUp, vals.gradientMin, vals.gradientMax, vals.gradientStart] = quant_specific_linear(tracks.xvalsgradient);
 end
 
 %% Plotting and Saving

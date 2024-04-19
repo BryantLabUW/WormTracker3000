@@ -30,6 +30,18 @@ if any(contains(info.analysis_selection, 'Time up/down gradient'))
         'Time_up_gradient', 'Time_down_gradient'];
 end
 
+if any(contains(info.analysis_selection, 'Min/Max value on gradient'))
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Min/Max value on gradient')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Max_gradient', 'Min_gradient'];
+end
+
+if any(contains(info.analysis_selection, 'Starting Position on Gradient'))
+    info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Starting Position on Gradient')); %Remove placeholder
+    info.analysis_selection = [info.analysis_selection, ...
+        'Gradient_start'];
+end
+
 if any(contains(info.analysis_selection, 'Number of Worms in Zone(s)'))
     info.analysis_selection = info.analysis_selection(~contains(info.analysis_selection, 'Number of Worms in Zone(s)')); %Remove placeholder
         TT=table(vals.nfinal.C, vals.nfinal.E,'VariableNames', ...
@@ -84,6 +96,12 @@ for X = 1:length(info.analysis_selection)
             T(:,X) = vals.timeUp'; 
         case 'Time_down_gradient'
             T(:,X) = vals.timeDown'; 
+        case 'Max_gradient'
+            T(:,X) = vals.gradientMax;
+        case 'Min_gradient'
+            T(:,X) = vals.gradientMin;
+        case 'Gradient_start'
+            T(:,X) = vals.gradientStart;
     end
 end
 

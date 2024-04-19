@@ -32,6 +32,7 @@ global info
 [xvals,yvals,frame] = deal(NaN(tracklength,numworms));
 [~, sheets]=xlsfinfo(info.calledfile);
 
+errorflag = 0;
 for i=1:numworms
     disp(['loading file ', num2str(i), ' of ', num2str(numworms)]);
     sheet = [wormUIDs{i}];
@@ -41,9 +42,18 @@ for i=1:numworms
             xvals(1:length(temp),i)=temp(:,2);
             yvals(1:length(temp),i)=temp(:,3);
             frame(1:length(temp),i)=temp(:,1);
+        else
+            disp(['The tab named ', wormUIDs{i}, ' is empty. Please remove from Index tab or add data.']);
+            errorflag = 1;
         end
         clear temp
-    end
-    
+    else
+        disp(['A data tab named ', wormUIDs{i}, ' was not found. Please check the excel spreadsheet.']);
+        errorflag = 1;
+    end   
+end
+
+if errorflag > 0
+    error('Errors discovered during data loading. Please see text above for details.');
 end
 end

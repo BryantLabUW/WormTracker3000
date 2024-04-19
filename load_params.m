@@ -17,12 +17,16 @@ alphabet = ['A':'Z'];
 [I, J] = find(contains(headers, 'Number of Worms'));
 if ~isempty(I) && ~isempty(J)
     info.numworms = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+    else
+    error('User Error. We could not locate the "Number of Worms" cell. Please check your index file.');
 end
 
 % Length of track (number of frames)
 [I, J] = find(contains(headers, 'Number of Images'));
 if ~isempty(I) && ~isempty(J)
     info.tracklength = importfileXLS(info.calledfile, 'Index', strcat(alphabet(J), num2str(I+1)));
+else
+    error('User Error. We could not locate the "Number of Images" cell. Please check your index file.');
 end
 
 % Quality check
@@ -36,6 +40,9 @@ if ~isempty(I) && ~isempty(J)
     [~, info.wormUIDs] = xlsread(info.calledfile, 'Index', strcat(...
         alphabet(J), num2str(I+1),...
         ':',alphabet(J), num2str(info.numworms+1)));
+    else
+    error('User Error. We could not locate the "UID" column. Please check your index file.');
+    
 end
 
 % Quality check
@@ -51,6 +58,8 @@ if ~isempty(I) && ~isempty(J)
 info.pixelspercm(:,1) = xlsread(info.calledfile, 'Index', strcat(...
     alphabet(J), num2str(I+1),...
     ':',alphabet(J), num2str(info.numworms+1)));
+else
+    error('User Error. We could not locate the "pixels per cm" cell. Please check your index file.');
 end
 
 if ~isequal(numel(info.wormUIDs),numel(info.pixelspercm(:,1)))
@@ -101,7 +110,7 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
     end
     
     % Gradient steepness
-    refstr = {'cmperdeg', 'Gradient slope', 'gradient slope'};
+    refstr = {'cmperdeg', 'Gradient slope', 'gradient slope', 'Gradient Slope'};
     [I, J] = find(contains(headers, refstr));
     if ~isempty(I) && ~isempty(J)
         info.gradient.rate = xlsread(info.calledfile, 'Index', strcat(...
@@ -153,7 +162,7 @@ if contains(info.assaytype, 'OdorThermo_22') || contains(info.assaytype, 'Odor_2
     if contains(info.assaytype, 'Iso_22') || contains(info.assaytype, 'Thermo_22')
         
         % Import Landmark Coodinates
-        refstr = {'XCoord', 'X coordinates', 'RefXCoord'};
+        refstr = {'XCoord', 'X coordinates', 'RefXCoord', 'T(s) XCoord'};
         [I, J] = find(contains(headers, refstr));
         if ~isempty(I) && ~isempty(J)
             info.ref.x = xlsread(info.calledfile, 'Index', strcat(...

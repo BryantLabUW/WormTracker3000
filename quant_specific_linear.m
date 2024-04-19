@@ -1,4 +1,4 @@
-function [finalgradientval, gradientdiff, sum_down, sum_up, count_down, count_up] = quant_specific_linear(xvals)
+function [finalgradientval, gradientdiff, sum_down, sum_up, count_down, count_up, mingradientval, maxgradientval, startgradientval] = quant_specific_linear(xvals)
 %% quant_specific_linear includes additional analyses for single-worm linear assays.
 global info
 global vals
@@ -25,6 +25,10 @@ startgradientval(startgradientval<info.gradient.min') = info.gradient.max(startg
 
 % Calculate change location of worm along the gradient
 gradientdiff=finalgradientval-startgradientval;
+
+%% Find minimum and maximum position on the gradient reached (in gradient values)
+mingradientval = min(xvals);
+maxgradientval = max(xvals);
 
 %% Calculate amount of distance traveled either up or down gradient, and time spent traveling
 osx = xvals(2:end,:); %x vals offset by one time point
