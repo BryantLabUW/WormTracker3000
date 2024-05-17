@@ -1,4 +1,4 @@
- function [] = WormTracker3000()
+function [] = WormTracker3000(varargin)
 %%WormTracker3000 Hallem Lab general purpose software for analysis and plotting on worm tracks
 %   The Worm Tracker 3000 is a unified codebase for the analysis and
 %   plotting of worm tracks collected during the course of behavioral
@@ -9,15 +9,23 @@
 %   Version 0.5
 %   Version Date: Nov 2022
 
-close all; clear all
+clearvars -EXCEPT varargin
 warning('off');
 global info
 global dat
 global vals
 global tracks
 
-%% Load experimental parameters and data
-load_files();
+
+%% Load experimental parameters and data (unless crawling)
+if isempty(varargin)
+    load_files();
+else
+    info.calledfile = varargin{1};
+    info.assaytype = varargin{2};
+    info.presets = varargin{3};
+end
+
 [info.pathstr, info.name, ~] = fileparts(info.calledfile);
 
 %% Gather user input on saving/plotting
@@ -94,9 +102,10 @@ if info.analysislogic > 0
     save_data();
 end
 
-close all
+clear all
+
 disp('Finished Analyzing Worm Tracks!');
 
-
+ 
 end
 

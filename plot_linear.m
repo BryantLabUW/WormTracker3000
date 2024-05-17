@@ -84,7 +84,7 @@ answer = questdlg('Do you want to plot a subset of tracks?', 'Subset Plotting', 
     movegui('northeast');
     
     while plotit>0 % Loop through the subset plotter until you get one you like.
-        n = 10; % number of tracks to plot
+        n = 20; % number of tracks to plot
         rng('shuffle'); % Seeding the random number generator to it's random.
         p = randperm(size(xvals,2),n);
         

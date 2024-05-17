@@ -108,5 +108,4 @@ end
 headers = strrep(info.analysis_selection, ' ', '_');    
 T = array2table(T, 'VariableNames', headers);
 writetable(T,fullfile(info.pathstr,info.name,strcat(info.name,'_results.xlsx')));
-
 end
