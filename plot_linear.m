@@ -62,16 +62,30 @@ if any(contains(info.sheets, 'Overlay'))
         dat.overlay.Yvals(i,1) = yvals(dat.overlay.Frame(i), I);
     end
     % Drawing the Overlay
-    overlayicons = ["diamond", "^", "square", "x", "*", "o"]; % Change this line of code to alter the style of overlay icons used
-    disp('Warning: icon identity may change if the number of overlay category types fluctuates across assays.');
-    disp('For stability, set all overlay event icons to the same marker type in the plot_basic.m file (near the code that generates this message).');
-    temp = categories(dat.overlay.Event);
-    hold on
-    for i = 1:info.overlay.CatNum
-        I = find(dat.overlay.Event == temp{i});
-        plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',10);
+     if isfield(dat.overlay,'icons') %  If users have provided a list of icons to use for specific events, make sure they make sense and use them
+        markers = ["diamond", "^", "square", "x", "*", "o", "+", ".", "_", "|", "v", ">", "<", "pentagram", "hexagram"]; 
+        if ~all(ismember(dat.overlay.icons, markers)) % are all user-provided icons a marker designation that matlab recognizes? If not, throw an error
+        error('Error: at least one of the markers provided for the overlay plot is not recognized by Matlab as a valid marker symbol. Please double check your inputs, using only Matlab marker designations. See: https://www.mathworks.com/help/matlab/creating_plots/specify-line-and-marker-appearance-in-plots.html');
+        end
+        
+         hold on
+        for I = 1:info.overlay.Num
+            plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), dat.overlay.icons(I), 'MarkerSize',5);
+        end
+        hold off
+    else  % If users haven't provided a list of icons to use for specific events, generate them
+        overlayicons = ["diamond", "^", "square", "x", "*", "o"]; % Change this line of code to alter the style of overlay marker symbols used
+        disp('Warning: icon identity may change if the number of overlay category types fluctuates across assays and overlay marker symbols are not specified by user.');
+        disp('For stability, set all overlay event icons to the same marker type in the plot_basic.m file (near the code that generates this message).');
+        temp = categories(dat.overlay.Event);
+
+        hold on
+        for i = 1:info.overlay.CatNum
+            I = find(dat.overlay.Event == temp{i});
+            plot(dat.overlay.Xvals(I), dat.overlay.Yvals(I), overlayicons(i), 'MarkerSize',5);
+        end
+        hold off
     end
-    hold off
     exportgraphics(gcf, fullfile(pathstr,[name,'/', name, '-overlay.pdf']),'ContentType','vector');
     
 end
