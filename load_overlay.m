@@ -19,6 +19,10 @@ info.overlay.CatNum = size(categories(dat.overlay.Event),1);
 [I, J] = find(contains(headers, {'UID', 'ID'}));
 dat.overlay.UIDs = headers(2:end, J);
 
+% User-specified icon for each overlay category
+[I, J] = find(contains(headers, {'Icon', 'Symbol'}));
+dat.overlay.icons = string(headers(2:end, J));
+
 % Frames for each overlay event
 [I, J] = find(contains(headers, {'Frame'}));
 if ~isempty(I) && ~isempty(J)

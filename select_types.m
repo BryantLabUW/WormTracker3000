@@ -12,7 +12,7 @@ plottypes = {'Plots Only', 'No Plots', ...
 if contains(info.presets, 'Basic info')
     preset_selection = [3, 4, 5, 6, 7];    
 elseif contains(info.presets, 'Thermotaxis')
-    preset_selection = [2, 10, 3, 4, 5, 10, 11, 12, 14];
+    preset_selection = [2, 10, 3, 4, 5, 9, 10, 11, 12, 13, 14];
     plottypes = [plottypes ...
         {'Distance up/down gradient','Time up/down gradient', 'Min/Max value on gradient', 'Number of Worms Higher/Lower on Gradient', 'Starting Position on Gradient'}];
 elseif contains(info.presets, 'Odors/Gas/Bacteria')

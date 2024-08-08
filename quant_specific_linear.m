@@ -44,7 +44,7 @@ count_up = arrayfun(@(x) numel(diffx(Indices{x}, x)), 1:info.numworms) .* info.s
 
 %% Number of animals that ended up lower versus higher on the gradient
 
-threshold = 0.1; % nominal threshold of distance for categories, in gradient values (i.e. temperature)
+threshold = 0.5; % nominal threshold of distance for categories, in gradient values (i.e. temperature)
 
 % For how many worms is the final x position higher/lower on the gradient, thresholded?
 
