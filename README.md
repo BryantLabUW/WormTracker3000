@@ -3,18 +3,21 @@ The ultimate Bryant/Hallem Lab worm tracking software system.
 
 Designed for tracking worms in thermotaxis assays, chemotaxis assays, and custom linear behavioral assays. See `Code Description.m` for a description of the code functionality.
 
-## Code author
-Astra S. Bryant, PhD
-contact: astrab [at] uw [dot] edu
+## Table of Contents
+1. System requirements
+2. Installation
+3. Data Pre-processing and User Inputs
+4. License
+5. Authors
 
-## System requirements
+## 1. System requirements
 WormTracker3000: Matlab R2023a or higher (tested on R_2023a)
 Data preprocessing: Microsoft Excel (tested on v16.97), FIJI (tested on ImageJ2 v2.14.0/1.54f, build c89e8500e4)
 
-## Installation 
+## 2. Installation 
 To install and run code, open the `WormTracker3000.m` file in Matlab and select the Run Code option. Then, follow the pop-up prompts in Matlab. Expected install time: <1 minute.
 
-## Data Preprocessing
+## 3. Data Preprocessing
 In order to function properly, this software requires a specifically formatted excel spreadsheet containing tracking data. The code includes built-in quantifications for 2 general assay categories, each comprised of several built-in types, as well as plotting for custom assays:  
 
 - Thermotaxis assays (i.e. those recorded using the thermotaxis behavioral rig)  
@@ -70,5 +73,11 @@ The overlay tab should contain the following columns:
 - Frame, a number that enables the code to locate the X/Y coordinates of the event by indexing the rows of the appropriate UID tab)
 - Event, a categorical string. Up to 6 distinct event types are supported.
 
-## Demo
+## 4. Demo
 A small dataset for demo-ing the software has been provided in this repository. To run the demo, open `WormTracker3000.m` file in Matlab and select the Run Code option. When offered a GUI to select a tracking file, pick `Example Tracking Dataset.xlsx`. At the prompt, select "Basic Track Info". When prompted to select plots and analyses, use the defaults provided. The code will generate a plot of a single worm engaging in skin penetration behavior. The worm track will be annotated with specific behaviors. In addition, the code will calculate the following parameters and save them in an xlsx file: distance ratio, mean speed, path length, instant speed, travel path. Expected runtime: ~1 minute.
+
+## 5. License
+This project is licensed under the MIT License
+
+## 6. Authors
+Astra S. Bryant, PhD
