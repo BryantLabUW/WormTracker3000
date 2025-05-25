@@ -1,13 +1,13 @@
 function [] = WormTracker3000(varargin)
-%%WormTracker3000 Hallem Lab general purpose software for analysis and plotting on worm tracks
+%%WormTracker3000 Bryant/Hallem Lab general purpose software for analysis and plotting on worm tracks
 %   The Worm Tracker 3000 is a unified codebase for the analysis and
 %   plotting of worm tracks collected during the course of behavioral
 %   assays, including: thermotaxis, odor tracking, C02 tracking, etc...
 %
 %   Code designed and created by Astra S. Bryant, PhD
 %
-%   Version 0.5
-%   Version Date: Nov 2022
+%   Version 1.0
+%   Version Date: May 2025
 
 clearvars -EXCEPT varargin
 warning('off');
