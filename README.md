@@ -27,7 +27,7 @@ In order to function properly, this software requires a specifically formatted e
     + Pure Isothermal (currently not implemented)
 - Chemotaxis assays (i.e. those recorded using the chemotaxis tracking stations)
     + Bacteria assay (4.9 cm arena)
-    + CO~2~ assay (3.75 cm arena)
+    + CO2 assay (3.75 cm arena)
     + Pheromone assay (5 cm arena)
     + Odor assay (5 cm arena)
 - Custom assays (for plotting tracks with minimal information)

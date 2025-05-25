@@ -2,7 +2,7 @@
 
 A pseudocode description of WormTracker 3000 functionality.
 
-The WormTracker3000 is the Bryant/Hallem Lab general purpose software for analysis and plotting on worm tracks. This code provides a unified codebase for the analysis and plotting of worm tracks collected during the course of behavioral assays, including: thermotaxis, odor tracking, CO~2~ tracking, etc...
+The WormTracker3000 is the Bryant/Hallem Lab general purpose software for analysis and plotting on worm tracks. This code provides a unified codebase for the analysis and plotting of worm tracks collected during the course of behavioral assays, including: thermotaxis, odor tracking, CO2 tracking, etc...
 
 The major elements of the code are as follows.
 
